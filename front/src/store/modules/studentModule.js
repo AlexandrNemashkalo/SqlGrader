@@ -9,8 +9,8 @@ export default {
         async GetWorksStudent(){
             var works = [
                 {
-                    id:1,
-                    name:"wfs",
+                    id:2,
+                    name:"КР №2",
                     status:"created",
                     dateOfStart:moment(),
                     dateOfEnd:moment(),
@@ -18,8 +18,8 @@ export default {
                     grade: null
                 },
                 {
-                    id:2,
-                    name:"wfs2",
+                    id:1,
+                    name:"КР №1",
                     status:"ended",
                     dateOfStart:moment().toISOString(),
                     dateOfEnd:moment().toISOString(),
