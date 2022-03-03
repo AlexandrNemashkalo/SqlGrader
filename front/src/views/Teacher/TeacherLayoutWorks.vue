@@ -83,7 +83,7 @@ export default {
       dialogDelete: false,
        headers: [
         { text: 'Название', align: 'start',value: 'name'},
-        { text: 'Дата создания', value: 'dateOfCreated', sortable: false },
+        { text: 'База данных', value: 'database', sortable: false },
         { text: 'Действия', value: 'actions', sortable: false },
       ],
       reveal: false,
@@ -99,7 +99,10 @@ export default {
 
   created(){
     window.addEventListener('scroll', this.handleScroll);
-    this.$store.dispatch("GetLayoutWorksTeacher");
+  },
+
+  async mounted(){
+    await this.$store.dispatch("GetLayoutWorksTeacher");
   },
 
   methods:{

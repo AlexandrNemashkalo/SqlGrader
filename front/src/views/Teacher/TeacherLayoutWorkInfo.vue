@@ -29,7 +29,7 @@
           v-model="editLayoutWork.database"
           :items="$store.state.databases"
           label="База данных"
-          item-text="name"
+          item-text="id"
           item-value="id"
           @change ="changeDatabase"
           :rules="databaseRules"
@@ -81,7 +81,7 @@
           item-text="name"
           item-value="id"
           label="Сложность"
-          v-model="i.complexity"
+          v-model="i.difficulty"
           required
           :rules="requiredRules"
           :readonly="!isCreate"
@@ -105,10 +105,10 @@ export default {
     return{
       isCreate: false,
       complexities:[
-        {id:1, name:"Легко"},
-        {id:2, name:"Терпимо"},
-        {id:3, name:"Сложно"},
-        {id:4, name:"Это вообще решаемо!?"}
+        {id: 'elementary', name:"Элементарно"},
+        {id: 'easy', name:"Легко"},
+        {id: 'medium', name:"Терпимо"},
+        {id: 'hard', name:"Сложно"}
         ],
       valid: true,
       nameRules: [
@@ -135,7 +135,7 @@ export default {
       }
     },
 
-  async created(){
+  async mounted(){
     await this.$store.dispatch("GetDatabasesTeacher");
     this.isCreate = this.$route.params.isCreate == "true";
 
@@ -155,22 +155,25 @@ export default {
       this.$refs.form.validate()
     }
     else{
-      this.editLayoutWork = await this.$store.dispatch("GetLayoutWorkInfoTeacher", this.$route.params.layoutWorkId);
+      await this.$store.dispatch("GetLayoutWorkInfoTeacher", this.$route.params.layoutWorkId);
+      this.editLayoutWork = this.$store.state.layoutWorkInfo
+      this.editLayoutWork.database = this.$store.state.databases.filter((x)=> x.id == this.editLayoutWork.database)[0]
     }
   
   },
   methods:{
-    validate () {
-        this.$refs.form.validate()
-        console.log(this.$refs.form.validate())
-        console.log(this.editLayoutWork)
+    async validate () {
+        var isOk = this.$refs.form.validate()
+        if(isOk){
+          await this.$store.dispatch("CreateLayoutWorkTeacher", this.editLayoutWork);
+        }
       },
 
     addTask(){
       this.editLayoutWork.tasks.push({
         description: "",
         solution: "",
-        complexity: null
+        difficulty: null
       })
     },
 

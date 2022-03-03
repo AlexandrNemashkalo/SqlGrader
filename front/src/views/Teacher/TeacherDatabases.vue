@@ -94,7 +94,7 @@
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: 'Название', align: 'start', value: 'name',
+        { text: 'Название', align: 'start', value: 'id',
         },
         { text: 'Описание', value: 'note', sortable: false },
         { text: 'Структура', value: 'structure', sortable: false },
@@ -114,8 +114,9 @@
       },
     }),
 
-    async created(){
-        await this.$store.dispatch("GetDatabasesTeacher");
+
+    async mounted(){
+      await this.$store.dispatch("GetDatabasesTeacher");
     },
 
     watch: {
@@ -146,7 +147,6 @@
       },
 
       save () {
-        console.log(this.editedItem)
         this.close()
       },
     },

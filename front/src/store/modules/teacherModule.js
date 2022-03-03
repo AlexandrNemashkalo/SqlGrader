@@ -7,58 +7,55 @@ import moment from "moment";
 export default {
     actions: {
         async GetLayoutWorksTeacher(state){
-            var layoutWorks = [
-                    {
-                      id : 1,
-                      name: "Макет 1",
-                      dateOfCreated: moment()
-                    },
-                    {
-                      id: 2,
-                      name: "Макет 2",
-                      dateOfCreated:moment().toISOString()
-                    }
-                ]
-            store.commit('setLayoutWorks', layoutWorks)
+            await axios.get(store.state.port +'teacher/layout_works?jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                store.commit('setLayoutWorks',response.data.layouts)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
         },
 
 
         async DeleteLayoutWorkTeacher(state, layoutWorkId){
-
         },
-
 
         async GetLayoutWorkInfoTeacher(state, data){
-            var layoutWorkInfo = {
-                id: data,
-                name: "Макет 1",
-                database: {
-                    id: 1,
-                    name: "film",
-                    note: "Один и тот же человек может сняться в фильме в качестве актера, и он же может быть режиссером и/или сценаристом этого или другого фильма.",
-                    structure: "erger g'er<div>gerg</div><div>&nbsp;er gerg e</div><div>&nbsp;grege-- re-- rger</div>"
-                },
-                tasks:[
-                    {
-                        id: 1, 
-                        description: "1 Для каждой персоны выдать количество фильмов, в которых он принимал участие в разных ролях (актер, режиссер, сценарист и т.д.).",
-                        solution: "SELECT * FROM TABLE",
-                        complexity: 1
-                    },
-                    {
-                        id: 2, 
-                        description: "2 Для каждой персоны выдать количество фильмов, в которых он принимал участие в разных ролях (актер, режиссер, сценарист и т.д.).",
-                        solution: "SELECT * FROM TABLE",
-                        complexity: 2
-                    }
-                ]
-            }
-            store.commit('setLayoutWorkInfo', layoutWorkInfo)
-            return layoutWorkInfo;
+            await axios.get(store.state.port +'teacher/layout_works/' + data + '?jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                response.data.layout.tasks = response.data.tasks;
+                store.commit('setLayoutWorkInfo', response.data.layout)
+                return response.data.layout;
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+
         },
 
-        async CreateLayoutWorkTeacher(state){
-            //store.commit('setLayoutWorkInfo', layoutWorkInfo)
+        async CreateLayoutWorkTeacher(state, data){
+            //не работает
+            await axios.post(store.state.port +'teacher/layout_works', {}, {
+                params: {
+                  database:data.database.id,
+                  name:data.name,
+                  tasks: data.tasks,
+                  jwt:store.state.jwt
+                }
+              }).then( response =>{
+                console.log(response)
+                response.data.layout.tasks = response.data.tasks;
+                //store.commit('setLayoutWorkInfo', response.data.layout)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
         },
 
 
@@ -67,22 +64,15 @@ export default {
         },
 
         async GetDatabasesTeacher(){
-            var databases = [
-                {
-                    id: 1,
-                    name: "film",
-                    note: "Один и тот же человек может сняться в фильме в качестве актера, и он же может быть режиссером и/или сценаристом этого или другого фильма.",
-                    structure: "-- 1Фильмы\ncreate table films (\nid number(6) primary key, -- суррогатный П\nname varchar(50) not null, -- название\np_year number(4) not null, -- год выхода\ncountry varchar(30), -- страна\nlength time, -- продолжительность\nrating number(3,1) not null, -- рейтинг (0-10)\ngenre varchar(20) not null -- жанр\n);\n-- Люди\ncreate table persons (\nid number(6) primary key, -- суррогатный ПК\nlname varchar2(40) not null, -- фамилия\nfname varchar2(40) not null, -- имя, отчество\ncountry varchar(30), -- страна\nbirth date not null -- дата рождения\n);\n-- Создатели фильмов\ncreate table creators (\nid number(6) primary key,\nfilm number (6) not null references films, -- фильм\npers number(6) not null references persons, -- человек\noccup varchar(50) not null, -- участие (актер, режиссер, композитор и т.д.)\nrole varchar(50) -- роль (только для актера)\n);"
-                },
-                {
-                    id: 2,
-                    name: "school",
-                    note: "!2132341Один и тот же человек может сняться в фильме в качестве актера, и он же может быть режиссером и/или сценаристом этого или другого фильма.",
-                    structure: "erger g'er<div>gerg</div><div>&nbsp;er gerg e</div><div>&nbsp;grege-- re-- rger</div>"
-                },
-            ]
-
-            store.commit('setDatabases', databases)
+            await axios.get(store.state.port +'teacher/databases?jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                store.commit('setDatabases', response.data.databases)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
         },
 
 
