@@ -119,7 +119,7 @@ export default {
 
   methods:{
     getDatabase(){
-      if(this.editStudentWork.task_count > 0){
+      if(this.editStudentWork.answers.length > 0){
         this.database = this.$store.state.databases.filter((x)=> x.id == this.editStudentWork.answers[0].task.database)[0]
       }
     },
