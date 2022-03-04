@@ -44,7 +44,7 @@
               Опубликовать контрольную
             </v-btn>
           </template>
-          <v-card>
+          <v-card >
            <v-form
                 ref="form"
                 v-model="valid"
@@ -71,7 +71,7 @@
                 :rules="layoutWorkRules"
               ></v-select>
 
-              <v-datetime-picker label="Дата и время начала контрольной" v-model="editedItem.dateOfStart">
+              <v-datetime-picker label="Дата и время начала контрольной" v-model="editedItem.start">
                 <template v-slot:timeIcon="{  }">
                     <v-icon>
                         mdi-clock-outline
@@ -84,7 +84,7 @@
                 </template>
               </v-datetime-picker>
 
-              <v-datetime-picker label="Дата и время окончания контрольной" v-model="editedItem.dateOfEnd">
+              <v-datetime-picker label="Дата и время окончания контрольной" v-model="editedItem.deadlin">
                 <template v-slot:timeIcon="{  }">
                     <v-icon>
                         mdi-clock-outline
@@ -98,15 +98,15 @@
               </v-datetime-picker>
 
               <v-combobox
-                v-model="editedItem.assignmentGroups"
-                :items="assignmentGroups"
+                v-model="editedItem.groups"
+                :items="groups"
                 label="Назначенные группы"
                 multiple
                 chips
               ></v-combobox>
 
               <v-combobox
-                v-model="editedItem.assignmentStudents"
+                v-model="editedItem.emails"
                 label="Студенты"
                 multiple
                 chips
@@ -140,19 +140,19 @@
       <v-btn @click="goToLayoutWork(item.layoutWork.id)">{{item.layoutWork.name}}</v-btn>
     </template>
 
-    <template v-slot:item.dateOfStart="{ item }">
-      <div>{{getFormatDate(item.dateOfStart)}}</div>
-      <div>{{getFormatDate(item.dateOfEnd)}}</div>
+    <template v-slot:item.start="{ item }">
+      <div>{{getFormatDate(item.start)}}</div>
+      <div>{{getFormatDate(item.deadline)}}</div>
     </template>
 
     <template v-slot:item.assignments="{ item }">
-        <v-chip v-for ="(assignment, index) in item.assignmentGroups" :key="index">
+        <v-chip v-for ="(assignment, index) in item.groups" :key="index">
         <v-icon small class="mr-1">
             mdi-account-group
         </v-icon>
         {{ assignment}}
         </v-chip>
-        <v-chip v-for ="(assignment, index) in item.assignmentStudents" :key="(index+1)*-1">
+        <v-chip v-for ="(assignment, index) in item.emails" :key="(index+1)*-1">
         <v-icon small class="mr-1">
            mdi-account
         </v-icon>
@@ -161,29 +161,43 @@
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <v-icon  class="mr-2" @click="getWorkInfo(item.id)">
-        mdi-eye 
-      </v-icon>
+      <v-btn
+          v-if="item.state!='created'"
+          icon
+          @click="getWorkInfo(item.id)"
+        >
+         <v-icon>mdi-eye</v-icon>
+      </v-btn>
 
-      <v-icon class="mr-2" @click="editWork(item)">
-        mdi-pencil
-      </v-icon>
+      <v-btn
+          icon
+          @click="editWork(item)"
+        >
+         <v-icon>mdi-pencil</v-icon>
+      </v-btn>
 
-      <v-icon  class="mr-2" >
-         mdi-play-box-outline
-      </v-icon>
+      <v-btn
+          v-if="item.state=='created'"
+          icon
+          @click="startWork(item)"
+        >
+         <v-icon>mdi-play-box-outline</v-icon>
+      </v-btn>
 
-      <v-icon  class="mr-2" >
-          mdi-close-circle-outline
-      </v-icon>
+      <v-btn
+          v-if="item.state=='created' || item.state=='running'"
+          icon
+          @click="cancelWork(item)"
+        >
+         <v-icon>mdi-close-circle-outline</v-icon>
+      </v-btn>
 
-      <v-icon  class="mr-2" >
-          mdi-checkbox-marked-circle-outline
-      </v-icon>
-
-      <v-icon  @click="deleteWork(item)">
-        mdi-delete
-      </v-icon>
+      <v-btn
+          icon
+          @click="deleteWork(item)"
+        >
+         <v-icon>mdi-delete</v-icon>
+      </v-btn>
 
     </template>
     <template v-slot:no-data>
@@ -208,7 +222,7 @@ export default {
     return{
       valid: true,
       editedIndex: null,
-      assignmentGroups:[
+      groups:[
           "БИВ195",
           "БИВ194",
           "БИВ193",
@@ -218,10 +232,10 @@ export default {
       dialogDelete: false,
        headers: [
         { text: 'Название', align: 'start',value: 'name'},
-        { text: 'Макет', value: 'layoutWork', sortable: false },
-        { text: 'Время выполнения', value: 'dateOfStart', sortable: false },
+        //{ text: 'Макет', value: 'layoutWork', sortable: false },
+        { text: 'Время выполнения', value: 'start', sortable: false },
         { text: 'Назначено', value: 'assignments', sortable: false },
-        { text: 'Статус', value: 'status', sortable: false },
+        { text: 'Статус', value: 'state', sortable: false },
         { text: 'Действия', value: 'actions', sortable: false },
       ],
        nameRules: [
@@ -242,10 +256,10 @@ export default {
             id: null,
             name: null
         },
-        dateOfStart: null,
-        dateOfEnd: null,
-        assignmentGroups: [],
-        assignmentStudents: []
+        start: null,
+        deadline: null,
+        groups: [],
+        emails: []
       },
     }
   },
@@ -255,7 +269,10 @@ export default {
 
   created(){
     window.addEventListener('scroll', this.handleScroll);
-    this.$store.dispatch("GetWorksTeacher");
+  },
+
+  async mounted(){
+    await this.$store.dispatch("GetWorksTeacher");
   },
 
   methods:{
@@ -294,11 +311,11 @@ export default {
       editWork (item) {
 
         this.editedItem = Object.assign({}, item)
-        if(this.editedItem.dateOfStart != null){
-            this.editedItem.dateOfStart = this.getFormatDate(this.editedItem.dateOfStart)
+        if(this.editedItem.start != null){
+            this.editedItem.start = this.getFormatDate(this.editedItem.start)
         }
-        if(this.editedItem.dateOfEnd != null){
-            this.editedItem.dateOfEnd = this.getFormatDate(this.editedItem.dateOfEnd)
+        if(this.editedItem.deadline != null){
+            this.editedItem.deadline = this.getFormatDate(this.editedItem.deadline)
         }
         this.dialog = true
       },

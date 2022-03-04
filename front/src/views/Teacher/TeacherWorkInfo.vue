@@ -5,9 +5,10 @@
     sort-by="name"
     class="elevation-1"
   >
-   <template v-slot:item.dateOfDownload="{ item }">
+    <template v-slot:item.dateOfDownload="{ item }">
       <div>{{getFormatDate(item.dateOfDownload)}}</div>
     </template>
+
     <template v-slot:item.grade="{ item }">
       <div>{{item.grade}} / {{$store.state.workInfo.maxGrade}}</div>
     </template>
@@ -67,9 +68,9 @@ import moment from 'moment';
       },
 
       getStudentWorkInfo(studentWorkId){
-          
        this.$router.push("/teacher/studentWork/" + studentWorkId)
       },
+      
       getFormatDate(date){
           return moment(date).format("YYYY-MM-DD HH:mm")
       },

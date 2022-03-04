@@ -5,7 +5,7 @@
           width="270px"
           fixed
           permanent
-          style="z-index: 1000"
+          style="z-index: 10"
       >
         <template v-slot:prepend>
           <v-list-item two-line>
@@ -93,7 +93,7 @@
     <v-navigation-drawer
         width="270"
         height="100vh"
-        style="z-index: 1000"
+        style="z-index: 10"
         v-model="drawer"
         fixed
         temporary

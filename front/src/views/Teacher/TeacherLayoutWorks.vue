@@ -54,7 +54,7 @@
       </v-icon>
 
       <v-icon
-        @click="deleteLayoutWork(item)"
+        @click="deleteLayoutWork(item.id)"
       >
         mdi-delete
       </v-icon>

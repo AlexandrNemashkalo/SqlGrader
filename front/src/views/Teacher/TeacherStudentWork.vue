@@ -5,21 +5,21 @@
     <h5> {{editStudentWork.grade}} / {{editStudentWork.maxGrade}}</h5> 
 
     <v-select
-          v-model="editStudentWork.database"
+          v-model="database"
           :items="$store.state.databases"
           label="База данных"
-          item-text="name"
+          item-text="id"
           item-value="id"
           :readonly="true"
     ></v-select>
-        <template v-if="editStudentWork.database != null && editStudentWork.database.id != null ">
+        <template v-if="database != null && database.id != null ">
         <p>
           <h5>Описание:</h5> 
-          {{editStudentWork.database.note}}
+          {{database.note}}
         </p>
         <p>
           <h5>Структура:</h5> 
-          <span v-html="editStudentWork.database.structure"></span></p>
+          <span v-html="database.structure"></span></p>
         </template>
         <h5>Вопросы:</h5>
 
@@ -27,15 +27,15 @@
           <div>
              <div style="display:inline-block;font-size:20px" class="mb-3">
                 <span >{{index +1}} вопрос </span>
-                <v-icon :color="i.isSuccess ? 'success' : 'error'">
-                  {{i.isSuccess ? 'mdi-checkbox-marked-circle-outline' :'mdi-close'  }}
+                <v-icon :color="i.correct ? 'success' : 'error'">
+                  {{i.correct ? 'mdi-checkbox-marked-circle-outline' :'mdi-close'  }}
                 </v-icon>
              </div>
             
             <v-textarea
             label="Описание вопроса"
             outlined
-            v-model="i.description"
+            v-model="i.task.description"
             rows="1"
             :readonly="true"
             ></v-textarea>
@@ -43,7 +43,7 @@
             <v-textarea
             label="Решение студента"
             outlined
-            v-model="i.studentAnswer"
+            v-model="i.result_query"
             rows="1"
             :readonly="true"
             ></v-textarea>
@@ -62,7 +62,7 @@
           item-text="name"
           item-value="id"
           label="Сложность"
-          v-model="i.complexity"
+          v-model="i.task.difficulty"
           :readonly="true"
         ></v-select>
           </div>
@@ -77,10 +77,10 @@ export default {
   data(){
     return{
       complexities:[
-        {id:1, name:"Легко"},
-        {id:2, name:"Терпимо"},
-        {id:3, name:"Сложно"},
-        {id:4, name:"Это вообще решаемо!?"}
+        {id: 'elementary', name:"Элементарно"},
+        {id: 'easy', name:"Легко"},
+        {id: 'medium', name:"Терпимо"},
+        {id: 'hard', name:"Сложно"}
         ],
       valid: true,
       nameRules: [
@@ -99,24 +99,30 @@ export default {
                 student:null,
                 grade: null,
                 maxGrade:null,
-                database: {
-                    id: null,
-                    name: null,
-                    note:null,
-                    structure: null
-                },
                 answers:[]
-        },
-      }
+      },
+      database: {
+                id: null,
+                name: null,
+                note:null,
+                structure: null
+      },
+    }
+  },
+
+  async mounted(){
+      await this.$store.dispatch("GetStudentWorkInfoTeacher", this.$route.params.studentWorkId);
+      this.editStudentWork = this.$store.state.studentWorkInfo;
+      await this.$store.dispatch("GetDatabasesTeacher");
+      this.getDatabase()
     },
 
-  async created(){
-    await this.$store.dispatch("GetDatabasesTeacher");
-
-    this.editStudentWork = await this.$store.dispatch("GetStudentWorkInfoTeacher", this.$route.params.studentWorkId);
-    console.log(this.editStudentWork )
-  },
   methods:{
+    getDatabase(){
+      if(this.editStudentWork.task_count > 0){
+        this.database = this.$store.state.databases.filter((x)=> x.id == this.editStudentWork.answers[0].task.database)[0]
+      }
+    },
     validate () {
         this.$refs.form.validate()
         console.log(this.$refs.form.validate())
