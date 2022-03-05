@@ -25,19 +25,27 @@
       <div v-if="item.grade != null">{{item.grade}} / {{item.maxGrade}}</div>
     </template>
 
-    <template v-slot:item.dateOfStart="{ item }">
-      <div>{{getFormatDate(item.dateOfStart)}}</div>
-      <div>{{getFormatDate(item.dateOfEnd)}}</div>
+    <template v-slot:item.dates="{ item }">
+      <div>{{getFormatDate(item.work.start)}}</div>
+      <div>{{getFormatDate(item.work.deadline)}}</div>
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <v-icon  class="mr-2" @click="getStudentWorkInfo(item.id)">
-        mdi-eye 
-      </v-icon>
+      <v-btn
+          v-if="item.work.state=='ended'"
+          icon
+          @click="getStudentWorkInfo(item.id)"
+        >
+         <v-icon>mdi-eye</v-icon>
+      </v-btn>
 
-      <v-icon class="mr-2" @click="editStudentWork(item)">
-        mdi-pencil
-      </v-icon>
+      <v-btn
+         v-if="item.state=='running' || true"
+          icon
+          @click="editStudentWork(item)"
+        >
+         <v-icon>mdi-pencil</v-icon>
+      </v-btn>
     </template>
     <template v-slot:no-data>
       <v-btn
@@ -53,15 +61,15 @@
 
 <script>
 
-//import moment from 'moment'
+import moment from 'moment'
 export default {
   name: "StudentWorks",
   data(){
     return{
        headers: [
-        { text: 'Название', align: 'start',value: 'name'},
-        { text: 'Время выполнения', value: 'dateOfStart', sortable: false },
-        { text: 'Статус', value: 'status', sortable: false },
+        { text: 'Название', align: 'start',value: 'work.name'},
+        { text: 'Время выполнения', value: 'dates', sortable: false },
+        { text: 'Статус', value: 'work.state', sortable: false },
         { text: 'Оценка', value: 'grade', sortable: false },
         { text: 'Действия', value: 'actions', sortable: false },
       ],
@@ -75,7 +83,10 @@ export default {
 
   created(){
     window.addEventListener('scroll', this.handleScroll);
-    this.$store.dispatch("GetWorksStudent");
+  },
+
+  async mounted(){
+    await this.$store.dispatch("GetWorksStudent");
   },
 
   methods:{
@@ -99,7 +110,7 @@ export default {
     },
 
     getFormatDate(date){
-      return "" //moment(date).format("YYYY-MM-DD HH:mm")
+      return moment(date).format("YYYY-MM-DD HH:mm")
     },
   }
 }

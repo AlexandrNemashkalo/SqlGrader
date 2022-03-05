@@ -58,6 +58,21 @@ export default new Vuex.Store({
       this.commit('setUser', data)
     },
 
+    async GetDatabase(state, databaseId){
+      var result ={};
+      await axios.get(this.state.port +'teacher/databases/'+databaseId+'?jwt='+this.state.jwt).then( response =>{
+          console.log(response)
+          result =response.data.database
+      }).catch(function (error) {
+          Swal.fire({
+              icon: 'error',
+              title: 'Ошибка',
+          })
+          console.log(error)});
+
+      return result
+  },
+
   },
   plugins: [vuexLocalStorage.plugin]
 })

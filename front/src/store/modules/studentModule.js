@@ -6,29 +6,29 @@ import moment from "moment";
 
 export default {
     actions: {
-        async GetWorksStudent(){
-            var works = [
-                {
-                    id:2,
-                    name:"КР №2",
-                    status:"created",
-                    dateOfStart:moment(),
-                    dateOfEnd:moment(),
-                    maxGrade:10,
-                    grade: null
-                },
-                {
-                    id:1,
-                    name:"КР №1",
-                    status:"ended",
-                    dateOfStart:moment().toISOString(),
-                    dateOfEnd:moment().toISOString(),
-                    maxGrade:10,
-                    grade: 10
-                },
-            ]
+        async GetWorksStudent(sate){
+            await axios.get(store.state.port +'student/student_works?page=0&jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                store.commit('setWorks',response.data.student_works)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
 
-            store.commit('setWorks', works);
+        async GetWorkInfoStudent(sate, studentWorkId){
+            await axios.get(store.state.port +'student/student_works/'+ studentWorkId+'?jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                response.data.student_work.answers = response.data.results;
+                store.commit('setStudentWorkInfo',response.data.student_work)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
         },
     },
 }

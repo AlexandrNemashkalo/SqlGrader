@@ -19,13 +19,13 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog v-model="dialogCancel" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-title class="text-h5">Are you sure you want to cancel this item?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+              <v-btn color="blue darken-1" text @click="closeCancel">NO</v-btn>
+              <v-btn color="blue darken-1" text @click="cancelItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -84,7 +84,7 @@
                 </template>
               </v-datetime-picker>
 
-              <v-datetime-picker label="Дата и время окончания контрольной" v-model="editedItem.deadlin">
+              <v-datetime-picker label="Дата и время окончания контрольной" v-model="editedItem.deadline">
                 <template v-slot:timeIcon="{  }">
                     <v-icon>
                         mdi-clock-outline
@@ -170,6 +170,7 @@
       </v-btn>
 
       <v-btn
+          v-if="item.state=='created'"
           icon
           @click="editWork(item)"
         >
@@ -187,16 +188,9 @@
       <v-btn
           v-if="item.state=='created' || item.state=='running'"
           icon
-          @click="cancelWork(item)"
+          @click="cancelWork(item.id)"
         >
          <v-icon>mdi-close-circle-outline</v-icon>
-      </v-btn>
-
-      <v-btn
-          icon
-          @click="deleteWork(item)"
-        >
-         <v-icon>mdi-delete</v-icon>
       </v-btn>
 
     </template>
@@ -229,7 +223,7 @@ export default {
           "БИВ192",
       ],
       dialog: false,
-      dialogDelete: false,
+      dialogCancel: false,
        headers: [
         { text: 'Название', align: 'start',value: 'name'},
         //{ text: 'Макет', value: 'layoutWork', sortable: false },
@@ -288,21 +282,21 @@ export default {
       }
     },
 
-    async deleteWork(layoutWorkId){
+    async cancelWork(layoutWorkId){
         this.editedIndex = layoutWorkId;
-        this.dialogDelete = true
+        this.dialogCancel = true
     },
 
-    closeDelete () {
-        this.dialogDelete = false
+    closeCancel () {
+        this.dialogCancel = false
         this.$nextTick(() => {
           this.editedIndex = -1
         })
     },
 
-    async deleteItemConfirm () {
-        await this.$store.dispatch("DeleteLayoutWorkTeacher", this.editedIndex);
-        this.closeDelete()
+    async cancelItemConfirm () {
+        await this.$store.dispatch("CancelWorkTeacher", this.editedIndex);
+        this.closeCancel()
       },
 
       initialize () {
@@ -323,7 +317,6 @@ export default {
       close () {
         this.dialog = false
         this.$nextTick(() => {
-          //this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
       },

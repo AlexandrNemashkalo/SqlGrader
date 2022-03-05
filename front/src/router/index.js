@@ -8,6 +8,7 @@ import SignIn from "../views/Auth/SignIn";
 
 //Student
 import StudentWorks from "../views/Student/StudentWorks";
+import StudentWorkInfo from "../views/Student/StudentWorkInfo";
 
 // Teacher
 import TeacherWorks from "../views/Teacher/TeacherWorks";
@@ -41,6 +42,11 @@ const routes = [
         path: 'works',
         name: 'StudentWorks',
         component: StudentWorks
+      },
+      {
+        path: 'works/:studentWorkId',
+        name: 'StudentWorkInfo',
+        component: StudentWorkInfo
       },
     ]
   },

@@ -18,7 +18,6 @@ export default {
                 console.log(error)});
         },
 
-
         async DeleteLayoutWorkTeacher(state, layoutWorkId){
             await axios.delete(store.state.port +'teacher/layout_works/' + layoutWorkId + '?jwt='+store.state.jwt).then( async response =>{
                 console.log(response)
@@ -47,28 +46,43 @@ export default {
         },
 
         async CreateLayoutWorkTeacher(state, data){
-            //не работает
-            var params= {
-                database:data.database.id,
-                name:data.name,
-                tasks: data.tasks,
-                jwt:store.state.jwt
-              };
-            await axios.post(store.state.port +'teacher/layout_works', params).then( response =>{
+            var taskIds = [];
+            for(let i = 0; i<data.tasks.length; i++){
+                let params = {
+                    task:{
+                        database_id: data.database.id,
+                        description: data.tasks[i].description,
+                        difficulty: data.tasks[i].difficulty,
+                        solution: data.tasks[i].solution,
+                        name: data.tasks[i].description
+                    }
+                }
+                await axios.post(store.state.port +'teacher/tasks?jwt='+store.state.jwt, params).then( response =>{
+                    console.log(response);
+                    taskIds.push(response.data.id)
+                }).catch(function (error) {
+                    Swal.fire({icon: 'error',title: 'Ошибка'})
+                    console.log(error)});
+            }
+
+            let params = {
+                layout:{
+                    database:data.database.id,
+                    name: data.name,
+                    tasks: taskIds
+                }
+            };
+            await axios.post(store.state.port +'teacher/layout_works?jwt='+store.state.jwt, params).then( response =>{
                 console.log(response)
-                response.data.layout.tasks = response.data.tasks;
-                //store.commit('setLayoutWorkInfo', response.data.layout)
+                store.commit('setLayoutWorkInfo', response.data.layout)
+                router.replace("/teacher/layoutworks/" + false + "/" + response.data.layout.id)
+                router.go(router.currentRoute)
             }).catch(function (error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Ошибка',
                 })
                 console.log(error)});
-        },
-
-
-        async CopyAndCreateLayoutWorkTeacher(state){
-            //store.commit('setLayoutWorkInfo', layoutWorkInfo)
         },
 
         async GetDatabasesTeacher(state){
@@ -83,21 +97,44 @@ export default {
                 console.log(error)});
         },
 
-
         async CreateWorkTeacher(state, data){
-           var createWork = {
-                layoutWorkId:1,
-                name:"КР №1",
-                dateOfStart:moment().toISOString(),
-                dateOfEnd:moment().toISOString(),
-                students:["student email 1", "student email 2"]
+            let params = {
+                work:{
+                    deadline: data.deadline,
+                    emails: data.emails,
+                    group: "group",
+                    layout_id: data.layoutWork.id,
+                    name: data.name,
+                    start: data.start
+                }
             }
+            await axios.post(store.state.port +'teacher/works?jwt='+store.state.jwt, params).then( async response =>{
+                console.log(response)
+                await store.dispatch("GetWorksTeacher"); 
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
         },
 
         async GetWorksTeacher(state){
             await axios.get(store.state.port +'teacher/works?page=0&jwt='+store.state.jwt).then( response =>{
                 console.log(response)
                 store.commit('setWorks',response.data.works)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
+        async CancelWorkTeacher(state, workId){
+            await axios.delete(store.state.port +'teacher/works/' + workId + '?jwt='+store.state.jwt).then( async response =>{
+                console.log(response)
+                await store.dispatch("GetWorksTeacher");   
             }).catch(function (error) {
                 Swal.fire({
                     icon: 'error',

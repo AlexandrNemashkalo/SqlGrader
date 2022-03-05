@@ -10,6 +10,10 @@ import DatetimePicker from 'vuetify-datetime-picker'
 
 import '../src/assets/style.scss';
 
+import VueAceEdit from "vue-ace-edit"
+
+Vue.use(VueAceEdit)
+
 Vue.config.productionTip = false
 
 Vue.use(RichTextEditor)

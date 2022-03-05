@@ -100,7 +100,7 @@
 
 <script>
 export default {
-  name: "TeacherLabInfo",
+  name: "TeacherLayoutWorkInfo",
   data(){
     return{
       isCreate: false,
