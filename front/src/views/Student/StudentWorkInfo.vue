@@ -119,6 +119,7 @@ export default {
   async mounted(){
     await this.$store.dispatch("GetWorkInfoStudent", this.$route.params.studentWorkId);
 
+    console.log(this.$store.state.studentWorkInfo)
     this.database = await this.$store.dispatch("GetDatabase", this.$store.state.studentWorkInfo.answers[0].task.database );
     
     this.editStudentWork =this.$store.state.studentWorkInfo

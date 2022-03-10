@@ -60,14 +60,15 @@
                       label="Name"
                       :rules="nameRules"
               ></v-text-field>
-                 
+
               <v-select
-                v-model="editedItem.layoutWork"
+                v-model="editedItem.layout_works"
                 :items="$store.state.layoutWorks"
                 label="Макет"
                 item-text="name"
                 item-value="id"
-                @change ="changeLayoutWork"
+                multiple
+                chips
                 :rules="layoutWorkRules"
               ></v-select>
 
@@ -99,8 +100,10 @@
 
               <v-combobox
                 v-model="editedItem.groups"
-                :items="groups"
+                :items="$store.state.groups"
                 label="Назначенные группы"
+                item-value="name"
+                item-text="name"
                 multiple
                 chips
               ></v-combobox>
@@ -136,8 +139,14 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.layoutWork="{ item }">
-      <v-btn @click="goToLayoutWork(item.layoutWork.id)">{{item.layoutWork.name}}</v-btn>
+    <template v-slot:item.layoutWorkIds="{ item }">
+      <v-chip v-for ="(layout, index) in item.layout_works" :key="index"
+      small
+      class="mr-1 mb-1"
+      @click="goToLayoutWork(layout.id)"
+      >
+        {{ layout.name}}
+      </v-chip>
     </template>
 
     <template v-slot:item.start="{ item }">
@@ -146,13 +155,17 @@
     </template>
 
     <template v-slot:item.assignments="{ item }">
-        <v-chip v-for ="(assignment, index) in item.groups" :key="index">
+        <v-chip v-for ="(assignment, index) in item.groups" :key="index"
+          small
+          class="mr-1 mb-1">
         <v-icon small class="mr-1">
             mdi-account-group
         </v-icon>
         {{ assignment}}
         </v-chip>
-        <v-chip v-for ="(assignment, index) in item.emails" :key="(index+1)*-1">
+        <v-chip v-for ="(assignment, index) in item.emails" :key="(index+1)*-1"
+          small
+          class="mr-1 mb-1">
         <v-icon small class="mr-1">
            mdi-account
         </v-icon>
@@ -216,17 +229,11 @@ export default {
     return{
       valid: true,
       editedIndex: null,
-      groups:[
-          "БИВ195",
-          "БИВ194",
-          "БИВ193",
-          "БИВ192",
-      ],
       dialog: false,
       dialogCancel: false,
        headers: [
         { text: 'Название', align: 'start',value: 'name'},
-        //{ text: 'Макет', value: 'layoutWork', sortable: false },
+        { text: 'Макеты', value: 'layoutWorkIds', sortable: false },
         { text: 'Время выполнения', value: 'start', sortable: false },
         { text: 'Назначено', value: 'assignments', sortable: false },
         { text: 'Статус', value: 'state', sortable: false },
@@ -237,7 +244,7 @@ export default {
       ],
       layoutWorkRules: [
         v => !!v || 'LayoutWork is required',
-        v => !!v.id || 'LayoutWork is required',
+        v => v.length > 0 || 'LayoutWork is required',
       ],
       reveal: false,
       searchId:null,
@@ -245,15 +252,13 @@ export default {
       model: null,
       editedIndex: -1,
       editedItem: {
+        id: null,
         name: null,
-        layoutWork: {
-            id: null,
-            name: null
-        },
         start: null,
         deadline: null,
         groups: [],
-        emails: []
+        emails: [],
+        layout_works:[]
       },
     }
   },
@@ -267,6 +272,7 @@ export default {
 
   async mounted(){
     await this.$store.dispatch("GetWorksTeacher");
+    await this.$store.dispatch("GetGroupsTeacher");
   },
 
   methods:{
@@ -282,8 +288,8 @@ export default {
       }
     },
 
-    async cancelWork(layoutWorkId){
-        this.editedIndex = layoutWorkId;
+    async cancelWork(workId){
+        this.editedIndex = workId;
         this.dialogCancel = true
     },
 
@@ -318,19 +324,36 @@ export default {
         this.dialog = false
         this.$nextTick(() => {
           this.editedIndex = -1
+          this.editedItem.id = null
         })
       },
 
       async save () {
         if(this.$refs.form.validate()){
-            console.log(this.editedItem)
-        await this.$store.dispatch("CreateWorkTeacher", this.editedItem);
+          console.log(this.editedItem)
+          if(this.editedItem.layout_works.length > 0 && typeof this.editedItem.layout_works[0] == "object"  ){
+            this.editedItem.layout_works = this.editedItem.layout_works.map(x => x.id)
+          }
+          if(this.editedItem.id == null)
+          {
+            await this.$store.dispatch("CreateWorkTeacher", this.editedItem);
+          }
+          else
+          {
+              if(this.editedItem.start != null){
+                this.editedItem.start = moment(this.editedItem.start).toISOString()
+              }
+              if(this.editedItem.deadline != null){
+                this.editedItem.deadline = moment(this.editedItem.deadline).toISOString()
+              }
+             await this.$store.dispatch("PatchWorkTeacher", this.editedItem);
+          }
         this.close()
         }
       },
 
-      changeLayoutWork(a){
-            this.editedItem.layoutWork = this.$store.state.layoutWorks.find(x => x.id == a)
+      getLayoutWorkName(id){
+            return this.$store.state.layoutWorks.find(x => x.id == a).name
       },
 
       getFormatDate(date){

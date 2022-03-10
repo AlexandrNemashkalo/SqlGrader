@@ -97,17 +97,48 @@ export default {
                 console.log(error)});
         },
 
+        async PatchDatabaseTeacher(state, data){
+            var params = {
+                database: {
+                    note: data.note,
+                    structure: data.structure
+                }
+            }
+            await axios.patch(store.state.port +'teacher/databases/'+data.id+'?jwt='+store.state.jwt, params ).then( async response =>{
+                console.log(response)
+                await store.dispatch("GetDatabasesTeacher"); 
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
+        async GetGroupsTeacher(state){
+            await axios.get(store.state.port +'teacher/groups?jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                store.commit('setGroups', response.data.groups)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
         async CreateWorkTeacher(state, data){
             let params = {
                 work:{
                     deadline: data.deadline,
                     emails: data.emails,
-                    group: "group",
-                    layout_id: data.layoutWork.id,
+                    groups: data.groups,
+                    layout_work_ids: data.layout_works,
                     name: data.name,
                     start: data.start
                 }
             }
+            console.log(params)
             await axios.post(store.state.port +'teacher/works?jwt='+store.state.jwt, params).then( async response =>{
                 console.log(response)
                 await store.dispatch("GetWorksTeacher"); 
@@ -119,8 +150,31 @@ export default {
                 console.log(error)});
         },
 
+        async PatchWorkTeacher(state, data){
+            let params = {
+                work:{
+                    deadline: data.deadline,
+                    emails: data.emails,
+                    groups: data.groups,
+                    layout_work_ids: data.layout_works,
+                    name: data.name,
+                    start: data.start
+                }
+            }
+            console.log(params)
+            await axios.patch(store.state.port +'teacher/works/'+data.id+'?jwt='+store.state.jwt, params).then( async response =>{
+                console.log(response)
+                await store.dispatch("GetWorksTeacher"); 
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
         async GetWorksTeacher(state){
-            await axios.get(store.state.port +'teacher/works?page=0&jwt='+store.state.jwt).then( response =>{
+            await axios.get(store.state.port +'teacher/works?page=-1&jwt='+store.state.jwt).then( response =>{
                 console.log(response)
                 store.commit('setWorks',response.data.works)
             }).catch(function (error) {

@@ -28,6 +28,9 @@ export default {
     setStudentWorkInfo(state, item){
         state.studentWorkInfo = item;
     },
+    setGroups(state, item){
+        state.groups = item;
+    },
 
 
 }

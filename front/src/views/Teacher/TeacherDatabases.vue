@@ -25,16 +25,12 @@
           max-width="800px"
         >
           <v-card>
-            <v-card-title>
+            <v-card-title class="mb-5">
               <span class="text-h5">Редактирование описания бд </span>
             </v-card-title>
+           
+            <v-card-text >  
 
-            <v-card-text>  
-              <v-text-field
-                      v-model="editedItem.name"
-                      label="Name"
-              ></v-text-field>
-                 
             <v-textarea
             label="Описание"
             outlined
@@ -103,6 +99,7 @@
 
       editedIndex: -1,
       editedItem: {
+        id: null,
         name: '',
         note: '',
         structure: '',  
@@ -146,7 +143,8 @@
         })
       },
 
-      save () {
+      async save () {
+        await this.$store.dispatch("PatchDatabaseTeacher", this.editedItem);
         this.close()
       },
     },
