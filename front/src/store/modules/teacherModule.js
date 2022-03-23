@@ -97,6 +97,18 @@ export default {
                 console.log(error)});
         },
 
+        async GetDatabaseTeacher(state, database){
+            await axios.get(store.state.port +'teacher/databases/'+database+'?jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                store.commit('setDatabaseInfo', response.data.database)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
         async PatchDatabaseTeacher(state, data){
             var params = {
                 database: {

@@ -31,6 +31,9 @@ export default {
     setGroups(state, item){
         state.groups = item;
     },
+    setDatabaseInfo(state, item){
+        state.databaseInfo = item;
+    },
 
 
 }

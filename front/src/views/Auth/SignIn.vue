@@ -11,8 +11,8 @@
             class="formCard"
         >
           <v-card-title>Авторизация</v-card-title>
-
-          <v-form
+          
+          <!--<v-form
               ref="form"
               v-model="valid"
               lazy-validation
@@ -37,11 +37,14 @@
                 color="primary"
                 class="mr-4 mt-4 mb-4 w-100"
                 @click="validate"
-            >Войти</v-btn>
+            >Войти</v-btn>-->
 
-            <span style="font-size: 12px">Нет аккаунта?
-              <a @click="$router.push('register-teacher')" class="primary--text">Зарегистрироваться как учитель</a>
-              <br> <a @click="$router.push('register-student')" class="primary--text">Зарегистрироваться как студент</a> </span>
+            <v-btn
+                color="primary"
+                class="mr-4 mt-4 mb-4 w-100"
+                href="http://awesomesql.ru/login"
+            >Войти через миэм</v-btn>
+
           </v-form>
 
 

@@ -33,6 +33,7 @@ export default new Vuex.Store({
     layoutWorks:null,
     layoutWorkInfo:null,
     databases: null,
+    databaseInfo: null,
     works: null,
     workInfo: null,
     studentWorkInfo: null,

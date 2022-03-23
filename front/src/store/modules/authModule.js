@@ -24,5 +24,9 @@ export default {
             }
             
         },
+
+        async Login(state, data){
+            router.go(store.state.port +'login')
+        },
     },
 }

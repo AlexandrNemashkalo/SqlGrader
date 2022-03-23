@@ -42,7 +42,7 @@
       <v-btn
          v-if="item.state=='running' || true"
           icon
-          @click="editStudentWork(item)"
+          @click="editStudentWorkInfo(item.id)"
         >
          <v-icon>mdi-pencil</v-icon>
       </v-btn>
@@ -91,11 +91,11 @@ export default {
 
   methods:{
     async getStudentWorkInfo(studentWorkId){
-        this.$router.push("works/"+ studentWorkId)
+        this.$router.push("works/false/"+ studentWorkId)
     },
 
     async editStudentWorkInfo(studentWorkId){
-        this.$router.push("works/"+ studentWorkId)
+        this.$router.push("works/true/"+ studentWorkId)
     },
 
     handleScroll (event) {

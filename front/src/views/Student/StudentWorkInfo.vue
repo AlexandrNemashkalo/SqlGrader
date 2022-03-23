@@ -6,38 +6,26 @@
     v-model="valid"
     lazy-validation
   >
-    <v-btn
-     style="right:0;position: absolute"
-      v-if="isCreate || true"
-      :disabled="!valid"
-      color="success"
-      class="mr-4"
-      @click="validate"
-      small
-    >
-      Отправить
-    </v-btn>
-    
         <p>
           <h5>Описание:</h5> 
-          {{database.note}}
+          {{$store.state.databaseInfo.note}}
         </p>
         <p>
           <h5>Структура:</h5> 
-          <span v-html="database.structure"></span></p>
+          <span v-html="$store.state.databaseInfo.structure"></span></p>
         
         <h5>Вопросы:</h5>
 
-        <div v-for="(i, index) in editStudentWork.answers " :key="i.index" class="mb-5">
-          <div>
-             <div style="display:inline-block;font-size:20px" class="mb-3">
+        <div v-for="(i, index) in editStudentWork.answers " :key="i.index"  style="margin-bottom:70px">
+          <div >
+             <div style="display:inline-block;font-size:20px" class="mb-2">
                 <span >{{index +1}}. Задание ({{complexities[i.task.difficulty]}}) </span>
                 <v-icon :color="i.correct ? 'success' : 'error'">
                   {{i.correct ? 'mdi-checkbox-marked-circle-outline' :'mdi-close'  }}
                 </v-icon>
                 <!--<v-spacer></v-spacer>-->
                 <v-btn
-                    v-if="isCreate || true"
+                    v-if="isEdit"
                     color="primary"
                     style="right:8px;position: absolute"
                     class="mr-2"
@@ -52,16 +40,15 @@
             <v-textarea
             label="Описание вопроса"
             outlined
-            required
             v-model="i.task.description"
             rows="2"
-            :rules="requiredRules"
             :readonly="true"
             ></v-textarea>
  
             <label>Ваше решение:</label>
             <v-card dark  style="border:1px solid gray; border-radius:5px;"  >
             <prism-editor 
+                :readonly="!isEdit"
                 class="language-sql" 
                 v-model="i.result_query" 
                 :highlight="highlighter" 
@@ -80,6 +67,7 @@
 
 <script>
 
+import Swal from "sweetalert2";
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css'; // import th
  
@@ -94,7 +82,7 @@ export default {
     },
   data(){
     return{
-      isCreate: false,
+      isEdit: false,
       database:{
           note: null,
           structure: null
@@ -117,25 +105,56 @@ export default {
     },
 
   async mounted(){
+    this.isEdit = this.$route.params.isEdit == "true"
+  
     await this.$store.dispatch("GetWorkInfoStudent", this.$route.params.studentWorkId);
 
+    await this.$store.dispatch("GetDatabaseTeacher", this.$store.state.studentWorkInfo.database);
+
     console.log(this.$store.state.studentWorkInfo)
-    this.database = await this.$store.dispatch("GetDatabase", this.$store.state.studentWorkInfo.answers[0].task.database );
+    //this.database = await this.$store.dispatch("GetDatabase", this.$store.state.studentWorkInfo.answers[0].task.database );
     
-    this.editStudentWork =this.$store.state.studentWorkInfo
+    this.editStudentWork = this.$store.state.studentWorkInfo
   },
   methods:{
       async checkAnswer(answer){
+        var response = await this.$store.dispatch("GetAndUpdateResultStudent", answer);
 
+        if(response.errors != null && response.errors.work != null ){
+           Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                    text:response.errors.work
+                })
+        }
+        else{
+          this.editStudentWork.answers.forEach( x =>{
+            if(x.id == response.id){
+              console.log(response)
+              x.correct = response.correct
+              x.result_query = response.result_query
+              
+            }
+          });
+
+          if(response.correct){
+            Swal.fire({
+                    icon: 'success',
+                    title: 'Успех',
+                })
+          }
+          else{
+            Swal.fire({
+              icon: 'warning',
+              title: 'Запрос неверный',
+            })
+          }
+        }
       },
+
       highlighter(code) {
         return highlight(code, languages.sql); // languages.<insert language> to return html with markup
-      },
-    async validate () {
-        var isOk = this.$refs.form.validate()
-        if(isOk){
-          //await this.$store.dispatch("CreateLayoutWorkTeacher", this.editLayoutWork);
-        }
+        
       },
   }
 }

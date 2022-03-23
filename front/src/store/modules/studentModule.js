@@ -30,5 +30,19 @@ export default {
                 })
                 console.log(error)});
         },
+
+        async GetAndUpdateResultStudent(sate, data){
+            var response = await axios.patch(store.state.port +'student/results/'+ data.id +'?query='+data.result_query +'&jwt='+store.state.jwt).then( async response =>{
+                console.log(response)
+                return response.data
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+
+            return response
+        },
     },
 }

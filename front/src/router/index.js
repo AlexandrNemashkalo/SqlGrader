@@ -44,7 +44,7 @@ const routes = [
         component: StudentWorks
       },
       {
-        path: 'works/:studentWorkId',
+        path: 'works/:isEdit/:studentWorkId',
         name: 'StudentWorkInfo',
         component: StudentWorkInfo
       },
