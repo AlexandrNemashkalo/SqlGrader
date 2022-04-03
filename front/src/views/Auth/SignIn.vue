@@ -12,7 +12,7 @@
         >
           <v-card-title>Авторизация</v-card-title>
           
-          <!--<v-form
+          <v-form
               ref="form"
               v-model="valid"
               lazy-validation

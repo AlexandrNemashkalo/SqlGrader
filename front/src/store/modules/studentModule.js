@@ -32,7 +32,12 @@ export default {
         },
 
         async GetAndUpdateResultStudent(sate, data){
-            var response = await axios.patch(store.state.port +'student/results/'+ data.id +'?query='+data.result_query +'&jwt='+store.state.jwt).then( async response =>{
+            var params = {
+                solution:{
+                    query:data.result_query
+                }
+            }
+            var response = await axios.patch(store.state.port +'student/results/'+ data.id +'?jwt='+store.state.jwt, params).then( async response =>{
                 console.log(response)
                 return response.data
             }).catch(function (error) {

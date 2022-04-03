@@ -40,7 +40,7 @@
       </v-btn>
 
       <v-btn
-         v-if="item.state=='running' || true"
+         v-if="item.work.state=='running'"
           icon
           @click="editStudentWorkInfo(item.id)"
         >
