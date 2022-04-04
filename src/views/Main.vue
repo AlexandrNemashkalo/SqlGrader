@@ -10,7 +10,7 @@
         <template v-slot:prepend>
           <v-list-item two-line>
             <v-list-item-avatar color="orange">
-            {{$store.state.user.name.toUpperCase()[0]}}
+            <img :src="$store.state.user.avatar"/>
             </v-list-item-avatar>
 
             <v-list-item-content>
