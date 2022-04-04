@@ -22,7 +22,7 @@
     </template>
 
     <template v-slot:item.grade="{ item }">
-      <div v-if="item.grade != null">{{item.grade}} / {{item.maxGrade}}</div>
+      <div v-if="item.grade != null">{{item.grade}}</div>
     </template>
 
     <template v-slot:item.dates="{ item }">

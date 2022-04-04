@@ -1,23 +1,21 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="$store.state.workInfo.studentWorks"
+    :items="$store.state.workInfo != null ? $store.state.workInfo.student_works : []"
     sort-by="name"
     class="elevation-1"
   >
-    <template v-slot:item.dateOfDownload="{ item }">
-      <div>{{getFormatDate(item.dateOfDownload)}}</div>
-    </template>
-
     <template v-slot:item.grade="{ item }">
-      <div>{{item.grade}} / {{$store.state.workInfo.maxGrade}}</div>
+      <div>{{item.grade}}</div>
     </template>
     
     <template v-slot:top>
       <v-toolbar
         flat
       >
-        <v-toolbar-title>Работы студентов по "{{$store.state.workInfo.name}}"</v-toolbar-title>
+        <v-toolbar-title v-if="$store.state.workInfo != null">
+          Работы студентов по "{{$store.state.workInfo.name}}"
+          </v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -48,8 +46,8 @@ import moment from 'moment';
   export default {
     data: () => ({
       headers: [
-        { text: 'Email студента',align: 'start', value: 'student' },
-        { text: 'Дата загрузки', value: 'dateOfDownload', sortable: false },
+        { text: 'ФИО студента', align: 'start', value: 'user.full_name' },
+        { text: 'Email студента',align: 'start', value: 'user.email' },
         { text: 'Оценка', value: 'grade', sortable: false },
         { text: 'Действия', value: 'actions', sortable: false },
       ],
@@ -71,9 +69,6 @@ import moment from 'moment';
        this.$router.push("/teacher/studentWork/" + studentWorkId)
       },
       
-      getFormatDate(date){
-          return moment(date).format("YYYY-MM-DD HH:mm")
-      },
     },
   }
 </script>

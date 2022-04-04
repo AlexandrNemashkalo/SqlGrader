@@ -9,7 +9,9 @@
       >
         <template v-slot:prepend>
           <v-list-item two-line>
-            <v-list-item-avatar color="orange">{{$store.state.user.name.toUpperCase()[0]}}</v-list-item-avatar>
+            <v-list-item-avatar color="orange">
+            {{$store.state.user.name.toUpperCase()[0]}}
+            </v-list-item-avatar>
 
             <v-list-item-content>
               <v-list-item-title>{{$store.state.user.name}}</v-list-item-title>
@@ -25,7 +27,7 @@
               v-model="group1"
               active-class="primary--text text--accent-4"
           >
-            <v-list-item v-if="!$store.state.user.isTeacher" @click="goTo(i.path)" v-for="i in studentItems" :key="i.id">
+            <v-list-item v-if="$store.state.user != null  && (!$store.state.user.is_teacher)" @click="goTo(i.path)" v-for="i in studentItems" :key="i.id">
               <v-list-item-icon >
                 <v-icon>{{i.icon}}</v-icon>
               </v-list-item-icon>
@@ -34,7 +36,7 @@
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item v-if="$store.state.user.isTeacher" @click="goTo(i.path)" v-for="i in teacherItems" :key="i.id">
+            <v-list-item v-if="$store.state.user != null  && $store.state.user.is_teacher" @click="goTo(i.path)" v-for="i in teacherItems" :key="i.id">
               <v-list-item-icon >
                 <v-icon>{{i.icon}}</v-icon>
               </v-list-item-icon>
@@ -117,7 +119,7 @@
             v-model="group2"
             active-class="primary--text text--accent-4"
         >
-          <v-list-item v-if="!$store.state.user.isTeacher" @click="goTo(i.path)" v-for="i in studentItems" :key="i.id">
+          <v-list-item v-if="$store.state.user!= null  && !$store.state.user.is_teacher" @click="goTo(i.path)" v-for="i in studentItems" :key="i.id">
             <v-list-item-icon >
               <v-icon>{{i.icon}}</v-icon>
             </v-list-item-icon>
@@ -126,7 +128,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item v-if="$store.state.user.isTeacher" @click="goTo(i.path)" v-for="i in teacherItems" :key="i.id">
+          <v-list-item v-if="$store.state.user!= null  && $store.state.user.is_teacher" @click="goTo(i.path)" v-for="i in teacherItems" :key="i.id">
             <v-list-item-icon >
               <v-icon>{{i.icon}}</v-icon>
             </v-list-item-icon>
@@ -192,6 +194,19 @@ export default {
     group2 () {
       this.drawer = false
     },
+  },
+
+  async created(){
+    if(this.$route.query.jwt != null ){
+        var result = await this.$store.dispatch("LoginUser",{jwt:this.$route.query.jwt})
+        
+    }
+
+    if(this.$store.state.jwt == null ){
+      this.$router.replace('/')
+    }
+    
+
   },
 
   methods:{

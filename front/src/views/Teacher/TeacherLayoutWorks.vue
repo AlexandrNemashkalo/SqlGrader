@@ -106,6 +106,8 @@ export default {
   },
 
   methods:{
+    initialize () {
+    },
     async createLayoutWork(){
         this.$router.push("layoutworks/" + true+ "/" + "0" )
     }, 

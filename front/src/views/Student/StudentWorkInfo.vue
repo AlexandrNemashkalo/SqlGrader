@@ -109,11 +109,8 @@ export default {
   
     await this.$store.dispatch("GetWorkInfoStudent", this.$route.params.studentWorkId);
 
-    await this.$store.dispatch("GetDatabaseTeacher", this.$store.state.studentWorkInfo.database);
+    await this.$store.dispatch("GetDatabaseStudent", this.$store.state.studentWorkInfo.database);
 
-    console.log(this.$store.state.studentWorkInfo)
-    //this.database = await this.$store.dispatch("GetDatabase", this.$store.state.studentWorkInfo.answers[0].task.database );
-    
     this.editStudentWork = this.$store.state.studentWorkInfo
   },
   methods:{

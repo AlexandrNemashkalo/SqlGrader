@@ -2,6 +2,8 @@
   <div style="height: 100vh;" >
 
       <v-card
+          style="opacity: .97"
+    
           class="signinContainer"
           elevation="2"
       >
@@ -10,9 +12,10 @@
             elevation="0"
             class="formCard"
         >
-          <v-card-title>Авторизация</v-card-title>
+          <v-card-title >Авторизация</v-card-title>
           
           <v-form
+          
               ref="form"
               v-model="valid"
               lazy-validation
@@ -32,12 +35,11 @@
             ></v-text-field>
 
             <v-btn
-
                 :disabled="!valid"
                 color="primary"
                 class="mr-4 mt-4 mb-4 w-100"
                 @click="validate"
-            >Войти</v-btn>-->
+            >Войти</v-btn>
 
             <v-btn
                 color="primary"
@@ -52,11 +54,13 @@
       </v-card>
 
 
-    <!--<img style="position: fixed;right:-200px;height: 100vh;z-index: 0" src="@/assets/imgs/signin.jpg"  >-->
+    <img style="position: fixed;right:-200px;height: 100vh;z-index: 0" src="@/assets/imgs/signin.jpg"  >
   </div>
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
   name: "SignIn",
   data: () => ({
@@ -77,7 +81,7 @@ export default {
   }),
 
   created(){
-    if(this.$store.state.token != null && this.$store.state.user != null  ){
+    if(this.$store.state.jwt != null && this.$store.state.user != null  ){
       if(this.$store.state.user.isTeacher){
         this.$router.replace("teacher/")
       }
@@ -91,7 +95,14 @@ export default {
   methods: {
     async validate () {
       if(this.$refs.form.validate()){
-          await this.$store.dispatch("LoginTeacher",{password:this.password, email:this.email})
+          var result = await this.$store.dispatch("LoginUser",{password:this.password, email:this.email})
+          if(result === false){
+            this.$refs.form.reset()
+             Swal.fire({
+                    icon: 'error',
+                    title: 'Неверный пароль или логин',
+                })
+          }
       }
     },
   },

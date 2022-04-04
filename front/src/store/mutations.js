@@ -34,6 +34,9 @@ export default {
     setDatabaseInfo(state, item){
         state.databaseInfo = item;
     },
+    setJwt(state, item){
+        state.jwt = item;
+    },
 
 
 }

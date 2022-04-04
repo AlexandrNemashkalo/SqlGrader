@@ -212,7 +212,6 @@ export default {
         async GetWorkInfoTeacher(state, workId){
             await axios.get(store.state.port +'teacher/works/'+workId+'?jwt='+store.state.jwt).then( response =>{
                 console.log(response)
-                response.data.work.studentWorks = response.data.student_works
                 store.commit('setWorkInfo',response.data.work)
             }).catch(function (error) {
                 Swal.fire({

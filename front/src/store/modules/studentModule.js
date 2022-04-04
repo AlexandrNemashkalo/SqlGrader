@@ -49,5 +49,17 @@ export default {
 
             return response
         },
+
+        async GetDatabaseStudent(state, database){
+            await axios.get(store.state.port +'student/databases/'+database+'?jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                store.commit('setDatabaseInfo', response.data.database)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
     },
 }
