@@ -41,7 +41,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              Опубликовать контрольную
+              Опубликовать
             </v-btn>
           </template>
           <v-card >
@@ -70,7 +70,27 @@
                 multiple
                 chips
                 :rules="layoutWorkRules"
-              ></v-select>
+              >
+                <template v-slot:prepend-item>
+                  <v-list-item
+                    ripple
+                    @mousedown.prevent
+                    @click="toggle"
+                  >
+                    <v-list-item-action>
+                      <v-icon :color="editedItem.layout_works.length > 0 ? '#652cd4' : ''">
+                        {{ icon }}
+                      </v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        Select All
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="mt-2"></v-divider>
+                </template>
+              </v-select>
 
               <v-datetime-picker label="Дата и время начала контрольной" v-model="editedItem.start">
                 <template v-slot:timeIcon="{  }">
@@ -275,7 +295,29 @@ export default {
     await this.$store.dispatch("GetGroupsTeacher");
   },
 
+  computed: {
+      likesAllFruit () {
+        return this.editedItem.layout_works.length === this.$store.state.layoutWorks.length
+      },
+      likesSomeFruit () {
+        return this.editedItem.layout_works.length > 0 && !this.likesAllFruit
+      },
+      icon () {
+        if (this.likesAllFruit) return 'mdi-close-box'
+        if (this.likesSomeFruit) return 'mdi-minus-box'
+        return 'mdi-checkbox-blank-outline'
+      },
+  },
   methods:{
+    toggle () {
+        this.$nextTick(() => {
+          if (this.likesAllFruit) {
+            this.editedItem.layout_works = []
+          } else {
+            this.editedItem.layout_works = this.$store.state.layoutWorks.slice()
+          }
+        })
+      },
     async getWorkInfo(workId){
         this.$router.push("works/"+ workId)
     },

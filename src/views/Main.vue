@@ -205,8 +205,6 @@ export default {
     if(this.$store.state.jwt == null ){
       this.$router.replace('/')
     }
-    
-
   },
 
   methods:{

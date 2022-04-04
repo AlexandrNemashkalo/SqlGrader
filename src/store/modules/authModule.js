@@ -31,7 +31,7 @@ export default {
                 state.commit("setJwt", store.state.newTeacherJwt)
                 var user = parseJwt(store.state.jwt);
                 user.is_teacher = user.email.includes("@hse.ru")
-                
+                console.log(user)
                 this.commit('setUser', user);
                 router.replace('/teacher/')
             }
