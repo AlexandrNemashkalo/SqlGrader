@@ -37,6 +37,9 @@ export default {
     setJwt(state, item){
         state.jwt = item;
     },
+    setStudents(state, item){
+        state.students = item;
+    },
 
 
 }

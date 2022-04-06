@@ -5,21 +5,25 @@
     :items="$store.state.databases"
     sort-by="name"
     class="elevation-1"
+    :search="search"
   >
-    <template v-slot:item.structure="{ item }">
-      <div v-html="item.structure"></div>
+    <template v-slot:item.structure="{ item }" >
+      <div  v-html="item.structure"></div>
     </template>
     <template v-slot:top>
       <v-toolbar
         flat
       >
         <v-toolbar-title>Базы данных</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
         <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+      
         <v-dialog
           v-model="dialog"
           max-width="800px"
@@ -92,8 +96,8 @@
       headers: [
         { text: 'Название', align: 'start', value: 'id',
         },
-        { text: 'Описание', value: 'note', sortable: false },
-        { text: 'Структура', value: 'structure', sortable: false },
+        { text: 'Описание', value: 'note', sortable: false,width: "30%" },
+        { text: 'Структура', value: 'structure', sortable: false,  },
         { text: 'Действия', value: 'actions', sortable: false },
       ],
 

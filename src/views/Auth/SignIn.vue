@@ -32,6 +32,9 @@
                 :rules="passwordRules"
                 label="Пароль"
                 required
+                :type="show1 ? 'text' : 'password'"
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="show1 = !show1"
             ></v-text-field>
 
             <v-btn
@@ -48,13 +51,10 @@
             >Войти через миэм</v-btn>
 
           </v-form>
-
-
         </v-card>
       </v-card>
-
-
-    <img style="position: fixed;right:-200px;height: 100vh;z-index: 0" src="@/assets/imgs/signin.jpg"  >
+    <img class="d-md-block d-none" style="position: fixed;width:100%;height: 100vh;z-index: 0" src="@/assets/imgs/signin.jpg"  >
+    <img class="d-md-none d-block" style="position: fixed;height: 100vh;z-index: 0" src="@/assets/imgs/signin.jpg"  >
   </div>
 </template>
 
@@ -64,6 +64,7 @@ import Swal from "sweetalert2";
 export default {
   name: "SignIn",
   data: () => ({
+    show1: false,
     valid: true,
     password: '',
     passwordRules: [

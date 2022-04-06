@@ -16,6 +16,8 @@ import TeacherWorkInfo from "../views/Teacher/TeacherWorkInfo";
 import TeacherStudentWork from "../views/Teacher/TeacherStudentWork";
 import TeacherLayoutWorks from "../views/Teacher/TeacherLayoutWorks";
 import TeacherLayoutWorkInfo from "../views/Teacher/TeacherLayoutWorkInfo";
+import TeacherStudents from "../views/Teacher/TeacherStudents";
+import TeacherGroups from "../views/Teacher/TeacherGroups";
 
 // Databases
 import TeacherDatabases from "../views/Teacher/TeacherDatabases";
@@ -84,6 +86,16 @@ const routes = [
         path: 'databases',
         name: 'TeacherDatabases',
         component: TeacherDatabases
+      },
+      {
+        path: 'students',
+        name: 'TeacherStudents',
+        component: TeacherStudents
+      },
+      {
+        path: 'groups',
+        name: 'TeacherGroups',
+        component: TeacherGroups
       },
     ]
   },

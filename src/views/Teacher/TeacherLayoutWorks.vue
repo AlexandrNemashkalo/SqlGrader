@@ -6,25 +6,33 @@
     :items="$store.state.layoutWorks"
     sort-by="name"
     class="elevation-1"
+    :search="search"
   >
     <template v-slot:top>
       <v-toolbar
         flat
       >
         <v-toolbar-title>Макеты контрольных работ</v-toolbar-title>
-         
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
+        
         <v-btn
               color="primary"
               @click="createLayoutWork()"
+              small
+              class="mx-2"
             >
              Создать макет
-            </v-btn>
+        </v-btn>
+
+        <v-spacer></v-spacer>
+        <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+        ></v-text-field>
+      
+
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
@@ -80,6 +88,7 @@ export default {
     return{
       editedIndex: null,
       dialog: false,
+      search:'',
       dialogDelete: false,
        headers: [
         { text: 'Название', align: 'start',value: 'name'},

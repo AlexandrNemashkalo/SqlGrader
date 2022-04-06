@@ -139,6 +139,25 @@ export default {
                 console.log(error)});
         },
 
+        async CreateGroupTeacher(state, data){
+            let params = {
+                group:{
+                    id: data.name,
+                }
+            }
+            await axios.post(store.state.port +'teacher/groups?jwt='+store.state.jwt, params).then( async response =>{
+                console.log(response)
+                await store.dispatch("GetGroupsTeacher"); 
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
+
+
         async CreateWorkTeacher(state, data){
             let params = {
                 work:{
@@ -233,5 +252,19 @@ export default {
                 })
                 console.log(error)});
         },
+
+        async GetStudentsTeacher(state){
+            await axios.get(store.state.port +'teacher/users?page=0&jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                store.commit('setStudents', response.data.users)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
+        
     },
 }

@@ -41,7 +41,8 @@ export default new Vuex.Store({
     works: [],
     workInfo: null,
     studentWorkInfo: null,
-    groups: []
+    groups: [],
+    students:[]
   },
   mutations,
   modules: {

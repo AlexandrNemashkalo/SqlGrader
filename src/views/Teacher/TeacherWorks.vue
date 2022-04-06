@@ -6,30 +6,13 @@
     :items="$store.state.works"
     sort-by="name"
     class="elevation-1"
+    :search="search"
   >
     <template v-slot:top>
       <v-toolbar
         flat
       >
         <v-toolbar-title>Контрольные работы</v-toolbar-title>
-         
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialogCancel" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">Are you sure you want to cancel this item?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeCancel">NO</v-btn>
-              <v-btn color="blue darken-1" text @click="cancelItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
         <v-dialog
           v-model="dialog"
           max-width="800px"
@@ -37,9 +20,11 @@
          <template v-slot:activator="{ on, attrs }">
             <v-btn
               color="primary"
+              class="ml-2 mr-2"
               dark
               v-bind="attrs"
               v-on="on"
+              small
             >
               Опубликовать
             </v-btn>
@@ -157,6 +142,29 @@
             </v-form>
           </v-card>
         </v-dialog>
+        
+        <v-spacer></v-spacer>
+
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+
+        <v-dialog v-model="dialogCancel" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5">Are you sure you want to cancel this item?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeCancel">NO</v-btn>
+              <v-btn color="blue darken-1" text @click="cancelItemConfirm">OK</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        
       </v-toolbar>
     </template>
     <template v-slot:item.layoutWorkIds="{ item }">
@@ -249,14 +257,15 @@ export default {
     return{
       valid: true,
       editedIndex: null,
+      search: '',
       dialog: false,
       dialogCancel: false,
        headers: [
         { text: 'Название', align: 'start',value: 'name'},
         { text: 'Макеты', value: 'layoutWorkIds', sortable: false },
-        { text: 'Время выполнения', value: 'start', sortable: false },
+        { text: 'Время выполнения', value: 'start', sortable: true },
         { text: 'Назначено', value: 'assignments', sortable: false },
-        { text: 'Статус', value: 'state', sortable: false },
+        { text: 'Статус', value: 'state', sortable: true },
         { text: 'Действия', value: 'actions', sortable: false },
       ],
        nameRules: [
