@@ -48,6 +48,10 @@ export default {
         async CreateFixedLayoutWorkTeacher(state, data){
             var taskIds = [];
             for(let i = 0; i<data.tasks.length; i++){
+                if(data.tasks[i].id != null){
+                    taskIds.push(data.tasks[i].id)
+                    continue
+                }
                 let params = {
                     task:{
                         database_id: data.database.id,

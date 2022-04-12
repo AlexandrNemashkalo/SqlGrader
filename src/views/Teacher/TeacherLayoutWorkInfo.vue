@@ -92,9 +92,62 @@
           </div>
         </div>
 
-        <v-btn v-if="isCreate" text @click="addTask()">
-        Добавить вопрос
+        <v-btn v-if="isCreate"  color="primary" small @click="addTask()">
+        Добавить новый вопрос
         </v-btn>
+
+        <v-dialog
+          v-if="isFixed && isCreate "
+          v-model="dialog"
+          max-width="500px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              :disabled="editLayoutWork.database.id == null"
+              color="primary"
+              dark
+              class="mx-2"
+              v-bind="attrs"
+              v-on="on"
+              small
+            >
+              Добавить существующий вопрос
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">Добавление существующего вопроса</span>
+            </v-card-title>
+
+            <v-card-text>
+                <v-select
+                v-model="editedItem"
+                :items="tasks"
+                label="Задание"
+                item-text="name"
+                item-value="id"
+              ></v-select>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="close"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="save"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
       </v-form>
 
@@ -107,6 +160,7 @@ export default {
   data(){
     return{
       isCreate: false,
+       dialog: false,
       complexities:[
         {id: 'elementary', name:"Элементарно"},
         {id: 'easy', name:"Легко"},
@@ -137,7 +191,15 @@ export default {
             },
             tasks:[]
         },
+
+      editedIndex: -1,
+      editedItem: {
+       
+      },
+      
       }
+
+      
     },
 
   async mounted(){
@@ -146,6 +208,7 @@ export default {
     this.isFixed = this.$route.params.type == "fixed";
 
     if(this.isCreate && this.$route.params.layoutWorkId == 0 ){
+      await this.$store.dispatch("GetTasksTeacher");
       this.editLayoutWork = 
       {
         id: null,
@@ -166,6 +229,12 @@ export default {
       this.editLayoutWork.database = this.$store.state.databases.filter((x)=> x.id == this.editLayoutWork.database)[0]
     }
     this.editLayoutWork.type = this.$route.params.type;
+  },
+
+  computed:{
+    tasks(){
+      return this.$store.state.tasks.filter(x => x.database == this.editLayoutWork.database.id)
+    }
   },
   methods:{
     async validate () {
@@ -189,13 +258,34 @@ export default {
     },
 
     changeDatabase(a){
-
+      this.editLayoutWork.tasks = []
       this.editLayoutWork.database = this.$store.state.databases.find(x => x.id == a)
     },
 
     deleteTask(index){
       this.editLayoutWork.tasks.splice(index, 1)
-    }
+    },
+
+    close () {
+        this.dialog = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, null)
+          this.editedIndex = -1
+        })
+      },
+
+      async save () {
+        var task =this.$store.state.tasks.filter(x => x.id == this.editedItem)[0]
+         this.editLayoutWork.tasks.push({
+            id: task.id,
+            description: task.description,
+            solution: task.solution,
+            difficulty: task.difficulty
+        })
+      
+        this.close()
+      },
+
   }
 }
 </script>
