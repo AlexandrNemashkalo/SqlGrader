@@ -40,6 +40,9 @@ export default {
     setStudents(state, item){
         state.students = item;
     },
+    setTasks(state, item){
+        state.tasks = item;
+    },
 
 
 }

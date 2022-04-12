@@ -57,6 +57,7 @@
              </div>
             
             <v-textarea
+            v-if="isFixed"
             label="Описание вопроса"
             outlined
             required
@@ -67,6 +68,7 @@
             ></v-textarea>
 
             <v-textarea
+            v-if="isFixed"
             label="Решение"
             outlined
             required
@@ -77,6 +79,7 @@
             ></v-textarea>
 
         <v-select
+          v-if="isFixed"
           :items="complexities"
           item-text="name"
           item-value="id"
@@ -111,6 +114,7 @@ export default {
         {id: 'hard', name:"Сложно"}
         ],
       valid: true,
+      isFixed:true,
       nameRules: [
         v => !!v || 'Name is required',
       ],
@@ -124,6 +128,7 @@ export default {
       editLayoutWork: {
             id: null,
             name: null,
+            type: '',
             database: {
               id : null,
               structure : null,
@@ -138,6 +143,7 @@ export default {
   async mounted(){
     await this.$store.dispatch("GetDatabasesTeacher");
     this.isCreate = this.$route.params.isCreate == "true";
+    this.isFixed = this.$route.params.type == "fixed";
 
     if(this.isCreate && this.$route.params.layoutWorkId == 0 ){
       this.editLayoutWork = 
@@ -159,13 +165,18 @@ export default {
       this.editLayoutWork = this.$store.state.layoutWorkInfo
       this.editLayoutWork.database = this.$store.state.databases.filter((x)=> x.id == this.editLayoutWork.database)[0]
     }
-  
+    this.editLayoutWork.type = this.$route.params.type;
   },
   methods:{
     async validate () {
         var isOk = this.$refs.form.validate()
         if(isOk){
-          await this.$store.dispatch("CreateLayoutWorkTeacher", this.editLayoutWork);
+          if(this.isFixed){
+            await this.$store.dispatch("CreateFixedLayoutWorkTeacher", this.editLayoutWork);
+          }
+          else{
+            await this.$store.dispatch("CreateRandomLayoutWorkTeacher", this.editLayoutWork);
+          }
         }
       },
 

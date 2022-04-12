@@ -18,6 +18,7 @@ import TeacherLayoutWorks from "../views/Teacher/TeacherLayoutWorks";
 import TeacherLayoutWorkInfo from "../views/Teacher/TeacherLayoutWorkInfo";
 import TeacherStudents from "../views/Teacher/TeacherStudents";
 import TeacherGroups from "../views/Teacher/TeacherGroups";
+import TeacherTasks from "../views/Teacher/TeacherTasks";
 
 // Databases
 import TeacherDatabases from "../views/Teacher/TeacherDatabases";
@@ -78,7 +79,7 @@ const routes = [
         component: TeacherLayoutWorks
       },
       {
-        path: 'layoutworks/:isCreate/:layoutWorkId',
+        path: 'layoutworks/:isCreate/:layoutWorkId/:type',
         name: 'TeacherLayoutWorkInfo',
         component: TeacherLayoutWorkInfo
       },
@@ -96,6 +97,11 @@ const routes = [
         path: 'groups',
         name: 'TeacherGroups',
         component: TeacherGroups
+      },
+      {
+        path: 'tasks',
+        name: 'TeacherTasks',
+        component: TeacherTasks
       },
     ]
   },

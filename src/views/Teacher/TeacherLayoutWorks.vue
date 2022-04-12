@@ -14,14 +14,30 @@
       >
         <v-toolbar-title>Макеты контрольных работ</v-toolbar-title>
         
-        <v-btn
-              color="primary"
-              @click="createLayoutWork()"
-              small
-              class="mx-2"
-            >
-             Создать макет
-        </v-btn>
+        <div class="text-center">
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                class="mx-2"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                small
+              >
+                Создать
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item  @click="createLayoutWork('fixed')">
+                <v-list-item-title>fixed</v-list-item-title>
+              </v-list-item>
+              <v-list-item  @click="createLayoutWork('randomized')">
+                <v-list-item-title>randomized</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
 
         <v-spacer></v-spacer>
         <v-text-field
@@ -49,12 +65,13 @@
     <template v-slot:item.actions="{ item }">
       <v-icon
         class="mr-2"
-        @click="getLayoutWorkInfo(item.id)"
+        @click="getLayoutWorkInfo(item)"
       >
         mdi-eye 
       </v-icon>
 
       <v-icon
+        v-if="item.type=='fixed'"
         class="mr-2"
         @click="copyAndCreateLayoutWork(item.id)"
       >
@@ -93,6 +110,7 @@ export default {
        headers: [
         { text: 'Название', align: 'start',value: 'name'},
         { text: 'База данных', value: 'database', sortable: false },
+        { text: 'Тип', value: 'type', sortable: false },
         { text: 'Действия', value: 'actions', sortable: false },
       ],
       reveal: false,
@@ -117,12 +135,12 @@ export default {
   methods:{
     initialize () {
     },
-    async createLayoutWork(){
-        this.$router.push("layoutworks/" + true+ "/" + "0" )
+    async createLayoutWork(type){
+        this.$router.push("layoutworks/" + true+ "/0/" + type )
     }, 
 
-    async getLayoutWorkInfo(layoutWorkId){
-        this.$router.push("layoutworks/" + false + "/" + layoutWorkId)
+    async getLayoutWorkInfo(layoutWork){
+        this.$router.push("layoutworks/" + false + "/" + layoutWork.id + "/" + layoutWork.type)
     }, 
 
     async copyAndCreateLayoutWork(layoutWorkId){

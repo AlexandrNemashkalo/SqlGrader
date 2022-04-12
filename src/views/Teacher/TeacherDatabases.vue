@@ -93,6 +93,7 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      search: '',
       headers: [
         { text: 'Название', align: 'start', value: 'id',
         },

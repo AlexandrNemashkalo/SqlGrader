@@ -182,6 +182,7 @@ export default {
         {id:5, title:"Базы данных", icon:"mdi-database-edit", path:"TeacherDatabases"},
         {id:9, title:"Студенты", icon:"mdi-account-multiple", path:"TeacherStudents"},
         {id:7, title:"Группы", icon:"mdi-account-group", path:"TeacherGroups"},
+        {id:11, title:"Задания", icon:"mdi-folder-question", path:"TeacherTasks"},
       ],
       studentItems:[
         {id:2, title:"Список работ", icon:"mdi-clipboard-list-outline", path:"StudentWorks"}

@@ -42,7 +42,8 @@ export default new Vuex.Store({
     workInfo: null,
     studentWorkInfo: null,
     groups: [],
-    students:[]
+    students:[],
+    tasks:[]
   },
   mutations,
   modules: {
@@ -63,6 +64,7 @@ export default new Vuex.Store({
         this.commit("setStudentWorkInfo", null)
         this.commit("setGroups", [])
         this.commit("setDatabaseInfo", null)
+        this.commit("setTasks", [])
     },
 
   },

@@ -45,7 +45,7 @@ export default {
 
         },
 
-        async CreateLayoutWorkTeacher(state, data){
+        async CreateFixedLayoutWorkTeacher(state, data){
             var taskIds = [];
             for(let i = 0; i<data.tasks.length; i++){
                 let params = {
@@ -69,13 +69,36 @@ export default {
                 layout:{
                     database:data.database.id,
                     name: data.name,
-                    tasks: taskIds
+                    tasks: taskIds,
+                    type:"fixed"
                 }
             };
             await axios.post(store.state.port +'teacher/layout_works?jwt='+store.state.jwt, params).then( response =>{
                 console.log(response)
                 store.commit('setLayoutWorkInfo', response.data.layout)
-                router.replace("/teacher/layoutworks/" + false + "/" + response.data.layout.id)
+                router.replace("/teacher/layoutworks/" + false + "/" + response.data.layout.id + "/fixed")
+                router.go(router.currentRoute)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
+        async CreateRandomLayoutWorkTeacher(state, data){
+            let params = {
+                layout:{
+                    database:data.database.id,
+                    name: data.name,
+                    size: data.tasks.length,
+                    type:"randomized"
+                }
+            };
+            await axios.post(store.state.port +'teacher/layout_works?jwt='+store.state.jwt, params).then( response =>{
+                console.log(response)
+                store.commit('setLayoutWorkInfo', response.data.layout)
+                router.replace("/teacher/layoutworks/" + false + "/" + response.data.layout.id + "/randomized")
                 router.go(router.currentRoute)
             }).catch(function (error) {
                 Swal.fire({
@@ -192,7 +215,6 @@ export default {
                     start: data.start
                 }
             }
-            console.log(params)
             await axios.patch(store.state.port +'teacher/works/'+data.id+'?jwt='+store.state.jwt, params).then( async response =>{
                 console.log(response)
                 await store.dispatch("GetWorksTeacher"); 
@@ -254,7 +276,7 @@ export default {
         },
 
         async GetStudentsTeacher(state){
-            await axios.get(store.state.port +'teacher/users?page=0&jwt='+store.state.jwt).then( response =>{
+            await axios.get(store.state.port +'teacher/users?page=-1&jwt='+store.state.jwt).then( response =>{
                 console.log(response)
                 store.commit('setStudents', response.data.users)
             }).catch(function (error) {
@@ -265,6 +287,49 @@ export default {
                 console.log(error)});
         },
 
-        
+        async GetTasksTeacher(state){
+            await axios.get(store.state.port +'teacher/tasks?page=-1&jwt='+store.state.jwt).then( response =>{
+                console.log(response)
+                store.commit('setTasks', response.data.tasks)
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
+        async CreateTaskTeacher(state, data){
+            let params = {
+                task:{
+                    name: data.name,
+                    database_id: data.database,
+                    difficulty:data.difficulty,
+                    description: data.description,
+                    solution: data.solution
+                }
+            }
+            await axios.post(store.state.port +'teacher/tasks?jwt='+store.state.jwt, params).then( async response =>{
+                console.log(response)
+                await store.dispatch("GetTasksTeacher");  
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
+
+        async DeleteTaskTeacher(state, taskId){
+            await axios.delete(store.state.port +'teacher/tasks/'+taskId+'?jwt='+store.state.jwt).then( async response =>{
+                console.log(response)
+                await store.dispatch("GetTasksTeacher");
+            }).catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                })
+                console.log(error)});
+        },
     },
 }

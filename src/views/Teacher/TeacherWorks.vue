@@ -46,9 +46,17 @@
                       :rules="nameRules"
               ></v-text-field>
 
+              <v-checkbox
+                 v-if="editedIndex ==-1"
+                 v-model="editedItem.isFixed"
+                  @click="clearLayouts()"
+                :label="`Fixed`"
+              ></v-checkbox>  
+
               <v-select
+                :readonly="editedIndex != -1"
                 v-model="editedItem.layout_works"
-                :items="$store.state.layoutWorks"
+                :items="layoutWorks"
                 label="Макет"
                 item-text="name"
                 item-value="id"
@@ -56,7 +64,7 @@
                 chips
                 :rules="layoutWorkRules"
               >
-                <template v-slot:prepend-item>
+                <template v-if="editedItem.isFixed" v-slot:prepend-item>
                   <v-list-item
                     ripple
                     @mousedown.prevent
@@ -281,6 +289,7 @@ export default {
       model: null,
       editedIndex: -1,
       editedItem: {
+        isFixed: true,
         id: null,
         name: null,
         start: null,
@@ -305,6 +314,9 @@ export default {
   },
 
   computed: {
+      layoutWorks(){
+        return this.$store.state.layoutWorks.filter(layoutWork => this.editedItem.isFixed == (layoutWork.type == "fixed") );
+      },
       likesAllFruit () {
         return this.editedItem.layout_works.length === this.$store.state.layoutWorks.length
       },
@@ -318,6 +330,9 @@ export default {
       },
   },
   methods:{
+    clearLayouts(){
+        this.editedItem.layout_works = []
+      },
     toggle () {
         this.$nextTick(() => {
           if (this.likesAllFruit) {
@@ -362,6 +377,7 @@ export default {
       editWork (item) {
 
         this.editedItem = Object.assign({}, item)
+        
         if(this.editedItem.start != null){
             this.editedItem.start = this.getFormatDate(this.editedItem.start)
         }
