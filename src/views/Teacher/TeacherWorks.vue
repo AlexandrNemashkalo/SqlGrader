@@ -301,6 +301,7 @@ export default {
   },
 
   async mounted(){
+    await this.$store.dispatch("GetLayoutWorksTeacher");
     await this.$store.dispatch("GetWorksTeacher");
     await this.$store.dispatch("GetGroupsTeacher");
   },
