@@ -227,14 +227,6 @@
       </v-btn>
 
       <v-btn
-          v-if="item.state=='created'"
-          icon
-          @click="startWork(item)"
-        >
-         <v-icon>mdi-play-box-outline</v-icon>
-      </v-btn>
-
-      <v-btn
           v-if="item.state=='created' || item.state=='running'"
           icon
           @click="cancelWork(item.id)"

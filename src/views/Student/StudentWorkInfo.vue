@@ -32,7 +32,7 @@
         <div v-for="(i, index) in editStudentWork.answers " :key="i.index"  style="margin-bottom:70px">
           <div >
              <div style="display:inline-block;font-size:20px" class="mb-2">
-                <span >{{index +1}}. Задание ({{complexities[i.task.difficulty]}}) </span>
+                <span >{{index +1}}. Задание </span>
                 <v-icon :color="i.correct ? 'success' : 'error'">
                   {{i.correct ? 'mdi-checkbox-marked-circle-outline' :'mdi-close'  }}
                 </v-icon>
@@ -116,12 +116,6 @@ export default {
       database:{
           note: null,
           structure: null
-      },
-      complexities:{
-        one:"Простой запрос",
-        join:"JOIN",
-        group:"Группировка",
-        subquery:"Подзапросы"
       },
       valid: true,
       requiredRules: [
