@@ -7,10 +7,12 @@
     lazy-validation
   >
         <div>
-        <p v-if="isEdit && currentTime >0">
+        <div v-if="isEdit && currentTime >0">
+        <p >
           <h5 >До завершения работы осталось:</h5> 
           {{ getFormatDuration(currentTime) }}
         </p>
+        </div>
         <p>
           <h5 >Описание БД:</h5> 
           {{$store.state.databaseInfo.note}}
