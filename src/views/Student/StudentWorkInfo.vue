@@ -7,13 +7,12 @@
     lazy-validation
   >
         <div>
-        <p v-if="currentTime >0 && isEdit">
+        <p v-if="isEdit && currentTime >0">
           <h5 >До завершения работы осталось:</h5> 
           {{ getFormatDuration(currentTime) }}
         </p>
         <p>
           <h5 >Описание БД:</h5> 
-          sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi  sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi  sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi  sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi  sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi
           {{$store.state.databaseInfo.note}}
         </p>
         <p>
@@ -144,7 +143,9 @@ export default {
       return a;
     })
     this.editStudentWork = work
-    this.startTimer()
+    if( this.isEdit){
+       this.startTimer()
+    }
   },
   watch: {
     currentTime(time) {
