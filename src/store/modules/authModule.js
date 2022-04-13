@@ -45,6 +45,15 @@ export default {
 
                 router.replace('/student/')
             }
+            else if(data.email == "ivanov@hse.ru" && data.password=="ivanov1234"){
+
+                state.commit("setJwt", store.state.ivanovStudentJwt)
+                var user = parseJwt(store.state.jwt);
+                user.is_teacher = false
+                console.log(user)
+                this.commit('setUser', user);
+                router.replace('/student/')
+            }
             else{
                 return false; 
             }  

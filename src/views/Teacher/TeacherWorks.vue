@@ -64,7 +64,7 @@
                 chips
                 :rules="layoutWorkRules"
               >
-                <template v-if="editedItem.isFixed" v-slot:prepend-item>
+                <template v-if="false" v-slot:prepend-item>
                   <v-list-item
                     ripple
                     @mousedown.prevent
