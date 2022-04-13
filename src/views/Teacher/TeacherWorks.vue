@@ -26,7 +26,7 @@
               v-on="on"
               small
             >
-              Опубликовать
+              Создать
             </v-btn>
           </template>
           <v-card >
@@ -85,7 +85,7 @@
                 </template>
               </v-select>
 
-              <v-datetime-picker label="Дата и время начала контрольной" v-model="editedItem.start">
+              <v-datetime-picker label="Дата и время начала контрольной" type="datetime-local" v-model="editedItem.start">
                 <template v-slot:timeIcon="{  }">
                     <v-icon>
                         mdi-clock-outline
@@ -98,7 +98,7 @@
                 </template>
               </v-datetime-picker>
 
-              <v-datetime-picker label="Дата и время окончания контрольной" v-model="editedItem.deadline">
+              <v-datetime-picker label="Дата и время окончания контрольной" type="datetime-local"  v-model="editedItem.deadline">
                 <template v-slot:timeIcon="{  }">
                     <v-icon>
                         mdi-clock-outline
@@ -403,15 +403,21 @@ export default {
           }
           if(this.editedItem.id == null)
           {
+             if(this.editedItem.start != null){
+                this.editedItem.start = moment(this.editedItem.start).add(3, 'hours').toISOString()
+             }
+              if(this.editedItem.deadline != null){
+                this.editedItem.deadline = moment(this.editedItem.deadline).add(3, 'hours').toISOString()
+              }
             await this.$store.dispatch("CreateWorkTeacher", this.editedItem);
           }
           else
           {
               if(this.editedItem.start != null){
-                this.editedItem.start = moment(this.editedItem.start).toISOString()
+                this.editedItem.start = moment(this.editedItem.start).add(3, 'hours').toISOString()
               }
               if(this.editedItem.deadline != null){
-                this.editedItem.deadline = moment(this.editedItem.deadline).toISOString()
+                this.editedItem.deadline = moment(this.editedItem.deadline).add(3, 'hours').toISOString()
               }
              await this.$store.dispatch("PatchWorkTeacher", this.editedItem);
           }

@@ -135,11 +135,11 @@
       search: '',
       dialogDelete:false,
       valid: true,
-      complexities:[
-        {id: 'elementary', name:"Элементарно"},
-        {id: 'easy', name:"Легко"},
-        {id: 'medium', name:"Терпимо"},
-        {id: 'hard', name:"Сложно"}
+        complexities:[
+        {id: 'one', name:"Простой запрос"},
+        {id: 'join', name:"JOIN"},
+        {id: 'group', name:"Группировка"},
+        {id: 'subquery', name:"Подзапросы"}
         ],
       headers: [
         { text: 'Название', align: 'start' , value:"name"},

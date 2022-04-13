@@ -6,13 +6,26 @@
     v-model="valid"
     lazy-validation
   >
+        <div>
         <p>
-          <h5>Описание:</h5> 
+          <h5 >До завершения работы осталось:</h5> 
+          {{ getFormatDuration(currentTime) }}
+        </p>
+        <p>
+          <h5 >Описание БД:</h5> 
+          sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi  sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi  sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi  sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi  sdlfh slda.k fsghpi;  oufglhs  trguiohsj goust rlhgju dogkh;df; ougijsdf oigijdfoi gj sdfoi
           {{$store.state.databaseInfo.note}}
         </p>
         <p>
           <h5>Структура:</h5> 
           <span v-html="$store.state.databaseInfo.structure"></span></p>
+        </div>
+
+        <v-img
+          height="500"
+          contain
+          :src="'http://awesomesql.ru/images/'+$store.state.databaseInfo.id+'/'+$store.state.databaseInfo.id+'.png'"
+        ></v-img>
         
         <h5>Вопросы:</h5>
 
@@ -56,6 +69,23 @@
             </prism-editor>
             </v-card>
 
+            <v-simple-table v-if="i.query_data_columns != null && i.query_data_columns.length > 0">
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th v-for="(column, index) in i.query_data_columns" :key="index" class="text-left">
+                      {{column}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in i.query_data" :key="index">
+                    <td v-for="(columnkey, idx) in i.query_data_columns" :key="idx">{{ item[columnkey] }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+
           </div>
         </div>
 
@@ -70,7 +100,7 @@
 import Swal from "sweetalert2";
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css'; // import th
- 
+ import moment from 'moment'
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-sql';
 import 'prismjs/themes/prism-tomorrow.css'; // i
@@ -88,10 +118,10 @@ export default {
           structure: null
       },
       complexities:{
-        elementary:"Элементарно",
-        easy:"Легко",
-        medium:"Терпимо",
-        hard:"Сложно"
+        one:"Простой запрос",
+        join:"JOIN",
+        group:"Группировка",
+        subquery:"Подзапросы"
       },
       valid: true,
       requiredRules: [
@@ -101,39 +131,76 @@ export default {
             id: null,
             answers:[]
         },
+        currentTime: 5,
+        timer: null
       }
     },
 
-  async mounted(){
+    async mounted(){
+     
     this.isEdit = this.$route.params.isEdit == "true"
   
     await this.$store.dispatch("GetWorkInfoStudent", this.$route.params.studentWorkId);
 
     await this.$store.dispatch("GetDatabaseStudent", this.$store.state.studentWorkInfo.database);
+    var work =  this.$store.state.studentWorkInfo;
+    work.answers = work.answers.map(a => {
+      a.query_data_columns = []
+      a.query_data = []
+      return a;
+    })
+    this.editStudentWork = work
+    this.startTimer()
+  },
+  watch: {
+    currentTime(time) {
+      if (time <= 0) {
+        this.stopTimer()
+      }
+    }
 
-    this.editStudentWork = this.$store.state.studentWorkInfo
   },
   methods:{
+    startTimer() {
+      this.currentTime = moment.duration(moment( this.editStudentWork.deadline).diff(moment()))
+      this.timer = setInterval(() => {
+        this.currentTime =  this.currentTime - 1000
+      }, 1000)
+    },
+    stopTimer() {
+      this.$router.replace('/student/works')
+    },
+    getFormatDuration(time){
+      var seconds = parseInt( (time / 1000) % 60 ) ;
+      var minutes = parseInt( (time / (1000*60) ) % 60 ) ;
+      var hours   = parseInt( (time / (1000*60*60) ) % 24 ) ;
+      var days   = parseInt( (time / (1000*60*60*24) )) ;
+      var daysString =''
+      if(days > 1){
+        daysString = days +" д "
+      }
+      return daysString + hours + " ч "+minutes+" мин "+seconds+" c ";
+    },
       async checkAnswer(answer){
         var response = await this.$store.dispatch("GetAndUpdateResultStudent", answer);
-
-        if(response.errors != null && response.errors.work != null ){
-           Swal.fire({
-                    icon: 'error',
-                    title: 'Ошибка',
-                    text:response.errors.work
-                })
-        }
-        else{
           this.editStudentWork.answers.forEach( x =>{
-            if(x.id == response.id){
-              console.log(response)
+            if(x.id == response.id){ 
               x.correct = response.correct
-              x.result_query = response.result_query
+              x.result_query = response.result_query  
+              if(response.query_data != null){
+                x.query_data_columns = response.query_data.columns
+                x.query_data = response.query_data.query_data
+              }
+              else{
+                x.query_data_columns = []
+                x.query_data = []
+              }
               
             }
           });
 
+          this.editStudentWork = Object.assign({}, this.editStudentWork)
+        
           if(response.correct){
             Swal.fire({
                     icon: 'success',
@@ -146,7 +213,6 @@ export default {
               title: 'Запрос неверный',
             })
           }
-        }
       },
 
       highlighter(code) {

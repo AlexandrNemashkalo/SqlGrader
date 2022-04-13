@@ -64,10 +64,10 @@ export default {
   data(){
     return{
       complexities:[
-        {id: 'elementary', name:"Элементарно"},
-        {id: 'easy', name:"Легко"},
-        {id: 'medium', name:"Терпимо"},
-        {id: 'hard', name:"Сложно"}
+        {id: 'one', name:"Простой запрос"},
+        {id: 'join', name:"JOIN"},
+        {id: 'group', name:"Группировка"},
+        {id: 'subquery', name:"Подзапросы"}
         ],
       valid: true,
       nameRules: [
