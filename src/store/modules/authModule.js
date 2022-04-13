@@ -50,6 +50,7 @@ export default {
                 state.commit("setJwt", store.state.ivanovStudentJwt)
                 var user = parseJwt(store.state.jwt);
                 user.is_teacher = false
+                user.name ="Иванов"
                 console.log(user)
                 this.commit('setUser', user);
                 router.replace('/student/')

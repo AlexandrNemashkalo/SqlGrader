@@ -7,7 +7,7 @@
     lazy-validation
   >
         <div>
-        <p>
+        <p v-if="currentTime >0 && isEdit">
           <h5 >До завершения работы осталось:</h5> 
           {{ getFormatDuration(currentTime) }}
         </p>
