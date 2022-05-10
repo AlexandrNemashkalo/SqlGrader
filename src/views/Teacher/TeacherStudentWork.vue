@@ -30,7 +30,7 @@
             label="Описание вопроса"
             outlined
             v-model="i.task.description"
-            rows="1"
+            rows="2"
             :readonly="true"
             ></v-textarea>
 
@@ -38,9 +38,11 @@
             label="Решение студента"
             outlined
             v-model="i.result_query"
-            rows="1"
+            
             :readonly="true"
             ></v-textarea>
+
+            {{i}}
 
             <span>Было отправлено {{i.solve_count}} р.</span>
 

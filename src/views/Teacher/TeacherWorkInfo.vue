@@ -5,6 +5,7 @@
     sort-by="name"
     class="elevation-1"
     :search="search"
+    :items-per-page="1000"
   >
     <template v-slot:item.grade="{ item }">
       <div>{{item.grade}}</div>

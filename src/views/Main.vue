@@ -178,7 +178,7 @@ export default {
       group2: null,
       teacherItems:[
         {id:1, title:"Макеты работ", icon:"mdi-clipboard-list-outline", path:"TeacherLayoutWorks"},
-        {id:3, title:"Опубликованные работы", icon:"mdi-text-box-multiple-outline", path:"TeacherWorks"},
+        {id:3, title:"Контрольные работы", icon:"mdi-text-box-multiple-outline", path:"TeacherWorks"},
         {id:5, title:"Базы данных", icon:"mdi-database-edit", path:"TeacherDatabases"},
         {id:9, title:"Студенты", icon:"mdi-account-multiple", path:"TeacherStudents"},
         {id:7, title:"Группы", icon:"mdi-account-group", path:"TeacherGroups"},

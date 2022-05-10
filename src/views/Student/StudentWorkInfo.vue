@@ -8,10 +8,15 @@
   >
         <div>
         <div v-if="isEdit && currentTime >0">
-        <p >
-          <h5 >До завершения работы осталось:</h5> 
+        
+        <div style="position:fixed;right:10px;background-color:rgba(4,4,4,0.9);padding:8px">
+        <div class="pl-5">
+        <h6 >До завершения работы осталось</h6> 
           {{ getFormatDuration(currentTime) }}
-        </p>
+        </div>
+          
+        </div>
+         
         </div>
         <p>
           <h5 >Описание БД:</h5> 
@@ -197,7 +202,8 @@ export default {
           });
 
           this.editStudentWork = Object.assign({}, this.editStudentWork)
-        
+         
+          console.log(response)
           if(response.correct){
             Swal.fire({
                     icon: 'success',
@@ -208,6 +214,7 @@ export default {
             Swal.fire({
               icon: 'warning',
               title: 'Запрос неверный',
+              text: response.errors.db_message
             })
           }
       },
