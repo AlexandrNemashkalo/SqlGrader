@@ -30,7 +30,7 @@
         <v-img
           height="500"
           contain
-          :src="'https://awesomesql.ru/images/'+$store.state.databaseInfo.id+'/'+$store.state.databaseInfo.id+'.png'"
+          :src="'http://awesomesql.ru/images/'+$store.state.databaseInfo.id+'/'+$store.state.databaseInfo.id+'.png'"
         ></v-img>
         
         <h5>Вопросы:</h5>
