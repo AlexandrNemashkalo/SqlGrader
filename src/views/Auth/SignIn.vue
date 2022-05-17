@@ -47,7 +47,7 @@
             <v-btn
                 color="primary"
                 class="mr-4 mt-4 mb-4 w-100"
-                href="http://awesomesql.ru/login"
+                href="https://awesomesql.ru/login"
             >Войти через миэм</v-btn>
 
           </v-form>

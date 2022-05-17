@@ -27,7 +27,7 @@ export default new Vuex.Store({
     oldJwt: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoX2VtYWlsIjoiaWl2YW5vdkBlZHUuaHNlLnJ1IiwiYXV0aF9wcm92aWRlciI6ImtleWNsb2FrIiwiZ29vZ2xlX2VtYWlsIjoiaWl2YW5vdkBtaWVtLmhzZS5ydSIsImhzZV9lbWFpbCI6ImlpdmFub3ZAaHNlLnJ1IiwiaXNfc3VwZXJfYWRtaW4iOnRydWUsIm5hbWUiOnsiZmlyc3RfbmFtZSI6ItCY0LLQsNC9IiwiZnVsbF9uYW1lIjoi0JjQstCw0L3QvtCyINCY0LLQsNC9INCY0LLQsNC90L7QstC40YciLCJsYXN0X25hbWUiOiLQmNCy0LDQvdC-0LIiLCJwYXRyb255bWljIjoi0JjQstCw0L3QvtCy0LjRhyIsInNob3J0X25hbWUiOm51bGx9LCJ1c2VyX2lkIjoiNjAzNjU1ZGQ1OGNhZjczMGUyMmY4OTY1In0.I5Ao9jKcvBmgWNcaQhnwKZIq7sIsYk_f-t_BjgBJgZSttlkko2G-qkgZ1dwAEs1yoQqTQmIAg6EkjRKBxHPgUxcvwMCJ-eUju3IvFCUFhHvNIMrAGzqipPuoEDs6Gp59UlAt52ewhJOKzG4p-QZ2UcRAk3Vzq4Ln7q1yFb3ASeH1MOj1dWUAjoj7lQhyV_YrQkJAOgNlme1XNHoNcce7PS4Oz25BdsYCaedmQn6fOg4ufdUE2xhigULX5QByeD0kyPeMdIwTqON0-n7_HnNVznLCOKQzFOwh5ywpRlI4OqlzOSwfWVsuU_FkPG1sqdgubjvujh2lCR7447RShmE8Fg",
     jwt: null,
     isDark:false,
-    port: "http://awesomesql.ru/api/", 
+    port: "https://awesomesql.ru/api/", 
     user:{
       user_id:null,
       name:null,
